@@ -37,10 +37,10 @@ const getPredictionById = (id: string) => {
   const predictions = [
     {
       id: '1',
-      title: '2025年までにビットコインは10万ドルを超えるか？',
+      title: 'Will Bitcoin exceed $100,000 by 2025?',
       description:
-        '2025年12月31日までに、ビットコインの価格が一度でも10万米ドルを超えた場合、この予測はYesとなります。主要な取引所（Binance、Coinbase、Krakenなど）の価格を参照します。',
-      category: '為替',
+        'This prediction will be Yes if Bitcoin price exceeds $100,000 USD at any point before December 31, 2025. Reference prices will be taken from major exchanges (Binance, Coinbase, Kraken, etc.).',
+      category: 'Currency',
       yesPercentage: 65,
       endDate: '2025-12-31',
       participants: 1243,
@@ -55,10 +55,10 @@ const getPredictionById = (id: string) => {
     },
     {
       id: '2',
-      title: '次期アメリカ大統領選挙で民主党候補が勝利するか？',
+      title: 'Will the Democratic candidate win the next US presidential election?',
       description:
-        '2024年11月に行われるアメリカ合衆国大統領選挙において、民主党の候補者が勝利した場合、この予測はYesとなります。選挙人団の過半数を獲得し、正式に次期大統領として認められることを条件とします。',
-      category: '政治',
+        'This prediction will be Yes if the Democratic Party candidate wins the US presidential election in November 2024. The condition is winning the majority of electoral college votes and being officially recognized as president-elect.',
+      category: 'Politics',
       yesPercentage: 48,
       endDate: '2024-11-05',
       participants: 3567,
@@ -73,10 +73,10 @@ const getPredictionById = (id: string) => {
     },
     {
       id: '3',
-      title: '次回の映画アカデミー賞作品賞を日本映画が受賞するか？',
+      title: 'Will a Japanese film win the next Academy Award for Best Picture?',
       description:
-        '2025年に開催される第97回アカデミー賞において、日本映画（日本で制作され、主に日本語で撮影された映画）が作品賞を受賞した場合、この予測はYesとなります。',
-      category: 'エンタメ',
+        'This prediction will be Yes if a Japanese film (produced in Japan and primarily filmed in Japanese) wins Best Picture at the 97th Academy Awards in 2025.',
+      category: 'Entertainment',
       yesPercentage: 12,
       endDate: '2025-03-01',
       participants: 876,
@@ -90,10 +90,10 @@ const getPredictionById = (id: string) => {
     },
     {
       id: '4',
-      title: '2024年内にAppleが折りたたみiPhoneを発売するか？',
+      title: 'Will Apple release a foldable iPhone in 2024?',
       description:
-        '2024年12月31日までに、Appleが公式に折りたたみ式のiPhoneを発表し、一般販売を開始した場合、この予測はYesとなります。プロトタイプや限定版は含みません。',
-      category: 'テクノロジー',
+        'This prediction will be Yes if Apple officially announces and begins general sales of a foldable iPhone by December 31, 2024. Prototypes and limited editions are not included.',
+      category: 'Technology',
       yesPercentage: 35,
       endDate: '2024-12-31',
       participants: 2145,
@@ -108,10 +108,10 @@ const getPredictionById = (id: string) => {
     },
     {
       id: '5',
-      title: '次回の東京オリンピックで日本のメダル獲得数は前回を上回るか？',
+      title: 'Will Japan exceed its previous medal count at the next Tokyo Olympics?',
       description:
-        '2028年ロサンゼルスオリンピックにおいて、日本選手団のメダル獲得総数が2021年東京オリンピックでの58個を上回った場合、この予測はYesとなります。',
-      category: 'スポーツ',
+        'This prediction will be Yes if the Japanese team surpasses their total of 58 medals from the 2021 Tokyo Olympics at the 2028 Los Angeles Olympics.',
+      category: 'Sports',
       yesPercentage: 72,
       endDate: '2028-08-11',
       participants: 1532,
@@ -169,10 +169,10 @@ export default function BetDetailPage() {
       <main className="min-h-screen pb-20">
         <div className="container px-4 py-6 mx-auto max-w-md">
           <h1 className="text-2xl font-bold mb-6 text-center">
-            予測が見つかりません
+            Prediction not found
           </h1>
           <Button asChild>
-            <Link href="/bet">予測一覧に戻る</Link>
+            <Link href="/bet">Back to Predictions</Link>
           </Button>
         </div>
         <Navbar />
@@ -190,7 +190,7 @@ export default function BetDetailPage() {
                 <ArrowLeft className="h-5 w-5" />
               </Link>
             </Button>
-            <h1 className="text-2xl font-bold ml-2">ベット完了</h1>
+            <h1 className="text-2xl font-bold ml-2">Bet Complete</h1>
           </div>
 
           <Card className="mb-6 shadow-sm">
@@ -210,28 +210,27 @@ export default function BetDetailPage() {
                 {prediction.title}
               </CardTitle>
               <CardDescription className="text-center text-base mt-2">
-                あなたは「{betChoice === 'yes' ? 'はい' : 'いいえ'}」に
-                {betAmount}WLD賭けました
+                You bet {betAmount}WLD on "{betChoice === 'yes' ? 'Yes' : 'No'}"
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex justify-between text-sm">
-                  <span>現在のオッズ:</span>
+                  <span>Current Odds:</span>
                   <span>
                     Yes: {prediction.yesPercentage}% / No:{' '}
                     {100 - prediction.yesPercentage}%
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span>終了日:</span>
+                  <span>End Date:</span>
                   <span>
-                    {new Date(prediction.endDate).toLocaleDateString('ja-JP')}
+                    {new Date(prediction.endDate).toLocaleDateString('en-US')}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span>参加者数:</span>
-                  <span>{prediction.participants.toLocaleString()}人</span>
+                  <span>Participants:</span>
+                  <span>{prediction.participants.toLocaleString()} people</span>
                 </div>
               </div>
             </CardContent>
@@ -247,19 +246,19 @@ export default function BetDetailPage() {
       <div className="container px-4 py-6 mx-auto max-w-md">
         <div className="flex items-center mb-6">
           <Button variant="ghost" size="icon" asChild className="h-10 w-10">
-            <Link href="/bet">
+            <Link href="/">
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>
-          <h1 className="text-2xl font-bold ml-2">予測の詳細</h1>
+          <h1 className="text-2xl font-bold ml-2">Prediction Details</h1>
         </div>
 
         <Card className="mb-6 shadow-sm">
           <CardHeader>
             <CardTitle className="text-xl">{prediction.title}</CardTitle>
             <CardDescription className="text-base">
-              カテゴリー: {prediction.category} | 終了日:{' '}
-              {new Date(prediction.endDate).toLocaleDateString('ja-JP')}
+              Category: {prediction.category} | End Date:{' '}
+              {new Date(prediction.endDate).toLocaleDateString('en-US')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -268,7 +267,7 @@ export default function BetDetailPage() {
                 <AccordionTrigger className="text-sm py-2">
                   <div className="flex items-center">
                     <Info className="h-4 w-4 mr-2" />
-                    予測の詳細
+                    Prediction Details
                   </div>
                 </AccordionTrigger>
                 <AccordionContent>
@@ -290,7 +289,7 @@ export default function BetDetailPage() {
               </div>
             </div>
             <div className="text-sm text-muted-foreground mb-4">
-              現在 {prediction.participants.toLocaleString()} 人が参加中
+              {prediction.participants.toLocaleString()} people participating
             </div>
           </CardContent>
         </Card>
@@ -298,22 +297,22 @@ export default function BetDetailPage() {
         {showConfirmation ? (
           <Card className="shadow-sm">
             <CardHeader>
-              <CardTitle className="text-xl">ベットの確認</CardTitle>
+              <CardTitle className="text-xl">Confirm Your Bet</CardTitle>
               <CardDescription className="text-base">
-                以下の内容で賭けを行います。確認してください。
+                Please confirm your bet details below.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
                 <h3 className="font-medium text-lg">{prediction.title}</h3>
                 <p className="text-sm text-muted-foreground">
-                  カテゴリー: {prediction.category} | 終了日:{' '}
-                  {new Date(prediction.endDate).toLocaleDateString('ja-JP')}
+                  Category: {prediction.category} | End Date:{' '}
+                  {new Date(prediction.endDate).toLocaleDateString('en-US')}
                 </p>
               </div>
               <div className="p-4 rounded-lg bg-muted">
                 <div className="flex justify-between mb-2">
-                  <span>あなたの選択:</span>
+                  <span>Your Choice:</span>
                   <span
                     className={
                       betChoice === 'yes'
@@ -321,17 +320,17 @@ export default function BetDetailPage() {
                         : 'text-red-500 font-bold'
                     }
                   >
-                    {betChoice === 'yes' ? 'はい (Yes)' : 'いいえ (No)'}
+                    {betChoice === 'yes' ? 'Yes' : 'No'}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>ベット種別:</span>
+                  <span>Bet Type:</span>
                   <span className={isFreeSpecialBet ? "text-purple-600 font-bold" : ""}>
-                    {isFreeSpecialBet ? '特別無料ベット' : '通常ベット'}
+                    {isFreeSpecialBet ? 'Special Free Bet' : 'Regular Bet'}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>ベット額:</span>
+                  <span>Bet Amount:</span>
                   <span>{betAmount} WLD</span>
                 </div>
               </div>
@@ -342,10 +341,10 @@ export default function BetDetailPage() {
                 size="lg"
                 onClick={() => setShowConfirmation(false)}
               >
-                キャンセル
+                Cancel
               </Button>
               <Button size="lg" onClick={confirmBet}>
-                確定する
+                Confirm
               </Button>
             </CardFooter>
           </Card>
@@ -353,23 +352,23 @@ export default function BetDetailPage() {
           <>
             <Tabs defaultValue="normal" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="normal">通常ベット</TabsTrigger>
-                <TabsTrigger value="worldid">World ID認証</TabsTrigger>
+                <TabsTrigger value="normal">Regular Bet</TabsTrigger>
+                <TabsTrigger value="worldid">World ID Verification</TabsTrigger>
               </TabsList>
 
               <TabsContent value="normal">
                 <Card className="mb-6 mt-3 shadow-sm">
                   <CardHeader>
-                    <CardTitle className="text-xl">ベット額を設定</CardTitle>
+                    <CardTitle className="text-xl">Set Bet Amount</CardTitle>
                     <CardDescription className="text-base">
-                      賭けるWLD数を入力してください
+                      Enter the amount of WLD you want to bet
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <div>
                         <Label htmlFor="amount" className="text-base">
-                          WLD数
+                          WLD Amount
                         </Label>
                         <Input
                           id="amount"
@@ -425,9 +424,9 @@ export default function BetDetailPage() {
                 {!isVerified ? (
                   <Card className="mb-6 mt-3 shadow-sm">
                     <CardHeader>
-                      <CardTitle className="text-xl">World ID認証で特典を獲得</CardTitle>
+                      <CardTitle className="text-xl">Get Benefits with World ID Verification</CardTitle>
                       <CardDescription className="text-base">
-                        World IDで認証すると、1日1回無料の特別ベットができます！
+                        Verify with World ID to get one free special bet per day!
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -441,10 +440,10 @@ export default function BetDetailPage() {
                     <CardHeader>
                       <CardTitle className="text-xl flex items-center gap-2">
                         <Check className="h-5 w-5 text-green-500" />
-                        特別ベット枠
+                        Special Bet Available
                       </CardTitle>
                       <CardDescription className="text-base">
-                        認証済みユーザー限定の無料ベット枠が利用可能です
+                        Free bet slot available for verified users
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -458,7 +457,7 @@ export default function BetDetailPage() {
                           }
                         }}
                       >
-                        {isFreeSpecialBet ? '通常ベットに切り替え' : '特別ベットを使用'}
+                        {isFreeSpecialBet ? 'Switch to Regular Bet' : 'Use Special Bet'}
                       </Button>
                     </CardContent>
                   </Card>
@@ -470,10 +469,10 @@ export default function BetDetailPage() {
               <>
                 <div className="text-center mb-6">
                   <h2 className="text-xl font-medium mb-2">
-                    左右にスワイプして予測
+                    Swipe to Make Your Prediction
                   </h2>
                   <p className="text-base text-muted-foreground">
-                    右にスワイプで「はい」、左にスワイプで「いいえ」
+                    Swipe right for "Yes", left for "No"
                   </p>
                 </div>
 

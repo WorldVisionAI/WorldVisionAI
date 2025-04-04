@@ -58,16 +58,22 @@ export default function Home() {
             A new prediction market platform where you can predict the future, place bets, and deeply understand through AI chat
           </p>
           <div className="flex gap-4 mt-6">
-            <Button asChild>
-              <Link href="/bet">Join Predictions</Link>
+            <Button
+              onClick={() => {
+                document.getElementById('featured-predictions')?.scrollIntoView({
+                  behavior: 'smooth'
+                });
+              }}
+            >
+              Join Predictions
             </Button>
             <Button variant="outline" asChild>
-              <Link href="/launch">Create New Prediction</Link>
+              <Link href="/chatbot">Ask World AI</Link>
             </Button>
           </div>
         </div>
 
-        <section className="mb-8">
+        <section id="featured-predictions" className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Featured Predictions</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {featuredPredictions.map((prediction) => (
