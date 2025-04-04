@@ -38,7 +38,7 @@ export function FloatingHeader() {
         <nav className="flex items-center gap-4">
           {(userName || walletAddress) ? (
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">{userName ?? walletAddress.slice(0, 4)}...{walletAddress.slice(-4)}</span>
+              <span className="text-sm font-medium">{userName ?? walletAddress.slice(0, 4) + "..." + walletAddress.slice(-4)}</span>
             </div>
           ) : (
             <Button variant="secondary" size="sm" onClick={handleSignIn}>
