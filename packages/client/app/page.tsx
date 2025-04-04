@@ -110,7 +110,7 @@ export default function Home() {
                     </span>
                   </div>
                   <Button className="w-full" asChild>
-                    <Link href={`/bet/${prediction.id}`}>Join Bet</Link>
+                    <Link href={`/bet/${prediction.id}`}>Join Prediction</Link>
                   </Button>
                 </CardContent>
               </Card>
