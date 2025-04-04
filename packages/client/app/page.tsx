@@ -13,8 +13,13 @@ import {
 } from '@/components/ui/card';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { useCoolMode } from '@/hooks/useCoolMode';
 
 export default function Home() {
+  const router = useRouter();
+  const buttonRef = useCoolMode("/world.png");
+
   const featuredPredictions = [
     {
       id: 1,
@@ -44,7 +49,11 @@ export default function Home() {
       <FloatingHeader />
       <div className="container px-4 py-6 mx-auto max-w-4xl">
         <div className="flex flex-col items-center text-center mb-8">
-          <div className="flex items-center gap-1">
+          <button
+            onClick={() => router.push("/")}
+            className="flex items-center gap-1 font-bold transition ease-in-out hover:scale-105 active:scale-95"
+            ref={buttonRef}
+          >
             <h1 className="text-4xl font-bold tracking-tight">WorldVisionAI</h1>
             <Image
               src="/world.png"
@@ -53,7 +62,7 @@ export default function Home() {
               height={50}
               className="object-contain"
             />
-          </div>
+          </button>
           <p className="text-muted-foreground mt-2 max-w-md">
             A new prediction market platform where you can predict the future, place bets, and deeply understand through AI chat
           </p>
