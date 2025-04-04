@@ -103,10 +103,11 @@ export default function ResultsPage() {
                         </div>
                         <span>結果: {prediction.result ? 'Yes' : 'No'}</span>
                       </div>
-                      <div className="text-sm">
-                        最終オッズ: Yes {prediction.yesPercentage}% / No{' '}
-                        {100 - prediction.yesPercentage}%
-                      </div>
+                    </div>
+
+                    <div className="text-sm text-right text-muted-foreground mb-4">
+                      最終オッズ: Yes {prediction.yesPercentage}% / No{' '}
+                      {100 - prediction.yesPercentage}%
                     </div>
 
                     <div className="p-3 rounded-lg bg-muted mb-4">
@@ -124,7 +125,7 @@ export default function ResultsPage() {
                       </div>
                       <div className="flex justify-between mb-1">
                         <span>ベット額:</span>
-                        <span>{prediction.betAmount} ポイント</span>
+                        <span>{prediction.betAmount} WLD</span>
                       </div>
                       <div className="flex justify-between">
                         <span>結果:</span>
@@ -138,7 +139,7 @@ export default function ResultsPage() {
                           {prediction.winnings > 0
                             ? `+${prediction.winnings}`
                             : prediction.winnings}{' '}
-                          ポイント
+                          WLD
                         </span>
                       </div>
                     </div>

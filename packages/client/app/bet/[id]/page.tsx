@@ -18,12 +18,19 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { ArrowLeft, Check, Info, X } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { SwipeCard } from './swipe-card';
 import { VerifyBlock } from '@/components/Verify';
+import { PayBlock } from '@/components/Pay';
 
 // Mock data - in a real app, you would fetch this from an API
 const getPredictionById = (id: string) => {
@@ -126,19 +133,26 @@ export default function BetDetailPage() {
   const id = params.id as string;
   const prediction = getPredictionById(id);
 
-  const [betAmount, setBetAmount] = useState('100');
+  const [betAmount, setBetAmount] = useState('1');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [betChoice, setBetChoice] = useState<'yes' | 'no' | null>(null);
   const [betPlaced, setBetPlaced] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [isFreeSpecialBet, setIsFreeSpecialBet] = useState(false);
+  const [showSwipeCard, setShowSwipeCard] = useState(false);
+  const [isPaid, setIsPaid] = useState(false);
 
   const handleSwipe = (direction: 'yes' | 'no') => {
-    if (!isVerified) {
+    if (!isVerified && !isPaid) {
       return;
     }
     setBetChoice(direction);
     setShowConfirmation(true);
+  };
+
+  const handlePaymentSuccess = () => {
+    setIsPaid(true);
+    setShowSwipeCard(true);
   };
 
   const confirmBet = () => {
@@ -197,7 +211,7 @@ export default function BetDetailPage() {
               </CardTitle>
               <CardDescription className="text-center text-base mt-2">
                 あなたは「{betChoice === 'yes' ? 'はい' : 'いいえ'}」に
-                {betAmount}ポイント賭けました
+                {betAmount}WLD賭けました
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -221,20 +235,6 @@ export default function BetDetailPage() {
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="flex justify-center gap-4">
-              <Button variant="outline" size="lg" className="flex-1" asChild>
-                <Link href="/bet">他の予測を見る</Link>
-              </Button>
-              <Button size="lg" className="flex-1" asChild>
-                <Link
-                  href={`/chatbot?topic=${encodeURIComponent(
-                    prediction.title,
-                  )}`}
-                >
-                  AIに質問する
-                </Link>
-              </Button>
-            </CardFooter>
           </Card>
         </div>
         <Navbar />
@@ -332,7 +332,7 @@ export default function BetDetailPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>ベット額:</span>
-                  <span>{betAmount} ポイント</span>
+                  <span>{betAmount} WLD</span>
                 </div>
               </div>
             </CardContent>
@@ -351,119 +351,135 @@ export default function BetDetailPage() {
           </Card>
         ) : (
           <>
-            {!isVerified && (
-              <Card className="mb-6 shadow-sm">
-                <CardHeader>
-                  <CardTitle className="text-xl">World ID認証で特典を獲得</CardTitle>
-                  <CardDescription className="text-base">
-                    World IDで認証すると、1日1回無料の特別ベットができます！
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex justify-center">
-                    <VerifyBlock onVerificationSuccess={() => setIsVerified(true)} />
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            <Tabs defaultValue="normal" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="normal">通常ベット</TabsTrigger>
+                <TabsTrigger value="worldid">World ID認証</TabsTrigger>
+              </TabsList>
 
-            {isVerified && (
-              <Card className="mb-6 shadow-sm bg-gradient-to-r from-blue-50 to-purple-50">
-                <CardHeader>
-                  <CardTitle className="text-xl flex items-center gap-2">
-                    <Check className="h-5 w-5 text-green-500" />
-                    特別ベット枠
-                  </CardTitle>
-                  <CardDescription className="text-base">
-                    認証済みユーザー限定の無料ベット枠が利用可能です
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button 
-                    className="w-full"
-                    variant={isFreeSpecialBet ? "secondary" : "default"}
-                    onClick={() => {
-                      setIsFreeSpecialBet(!isFreeSpecialBet);
-                      if (!isFreeSpecialBet) {
-                        setBetAmount('100'); // Reset to default amount for special bet
-                      }
-                    }}
-                  >
-                    {isFreeSpecialBet ? '通常ベットに切り替え' : '特別ベットを使用'}
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-
-            {!isFreeSpecialBet && (
-              <Card className="my-6 shadow-sm">
-                <CardHeader>
-                  <CardTitle className="text-xl">ベット額を設定</CardTitle>
-                  <CardDescription className="text-base">
-                    賭けるポイント数を入力してください
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="amount" className="text-base">
-                        ポイント数
-                      </Label>
-                      <Input
-                        id="amount"
-                        type="number"
-                        value={betAmount}
-                        onChange={(e) => setBetAmount(e.target.value)}
-                        min="10"
-                        step="10"
-                        className="text-lg h-12 mt-1"
-                      />
+              <TabsContent value="normal">
+                <Card className="mb-6 mt-3 shadow-sm">
+                  <CardHeader>
+                    <CardTitle className="text-xl">ベット額を設定</CardTitle>
+                    <CardDescription className="text-base">
+                      賭けるWLD数を入力してください
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="amount" className="text-base">
+                          WLD数
+                        </Label>
+                        <Input
+                          id="amount"
+                          type="number"
+                          value={betAmount}
+                          onChange={(e) => setBetAmount(e.target.value)}
+                          min="10"
+                          step="10"
+                          className="text-lg h-12 mt-1"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 gap-2">
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          onClick={() => setBetAmount('1')}
+                        >
+                          1
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          onClick={() => setBetAmount('5')}
+                        >
+                          5
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          onClick={() => setBetAmount('10')}
+                        >
+                          10
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          onClick={() => setBetAmount('50')}
+                        >
+                          50
+                        </Button>
+                      </div>
+                      {!isPaid && (
+                        <div className="mt-4">
+                          <PayBlock onSuccess={handlePaymentSuccess} amount={parseInt(betAmount)} />
+                        </div>
+                      )}
                     </div>
-                    <div className="grid grid-cols-4 gap-2">
-                      <Button
-                        variant="outline"
-                        size="lg"
-                        onClick={() => setBetAmount('50')}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="worldid">
+                {!isVerified ? (
+                  <Card className="mb-6 mt-3 shadow-sm">
+                    <CardHeader>
+                      <CardTitle className="text-xl">World ID認証で特典を獲得</CardTitle>
+                      <CardDescription className="text-base">
+                        World IDで認証すると、1日1回無料の特別ベットができます！
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex justify-center">
+                        <VerifyBlock onVerificationSuccess={() => setIsVerified(true)} />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <Card className="mb-6 mt-3 shadow-sm bg-gradient-to-r from-blue-50 to-purple-50">
+                    <CardHeader>
+                      <CardTitle className="text-xl flex items-center gap-2">
+                        <Check className="h-5 w-5 text-green-500" />
+                        特別ベット枠
+                      </CardTitle>
+                      <CardDescription className="text-base">
+                        認証済みユーザー限定の無料ベット枠が利用可能です
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button 
+                        className="w-full"
+                        variant={isFreeSpecialBet ? "secondary" : "default"}
+                        onClick={() => {
+                          setIsFreeSpecialBet(!isFreeSpecialBet);
+                          if (!isFreeSpecialBet) {
+                            setBetAmount('100');
+                          }
+                        }}
                       >
-                        50
+                        {isFreeSpecialBet ? '通常ベットに切り替え' : '特別ベットを使用'}
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="lg"
-                        onClick={() => setBetAmount('100')}
-                      >
-                        100
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="lg"
-                        onClick={() => setBetAmount('500')}
-                      >
-                        500
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="lg"
-                        onClick={() => setBetAmount('1000')}
-                      >
-                        1000
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                    </CardContent>
+                  </Card>
+                )}
+              </TabsContent>
+            </Tabs>
+
+            {(showSwipeCard || isVerified) && (
+              <>
+                <div className="text-center mb-6">
+                  <h2 className="text-xl font-medium mb-2">
+                    左右にスワイプして予測
+                  </h2>
+                  <p className="text-base text-muted-foreground">
+                    右にスワイプで「はい」、左にスワイプで「いいえ」
+                  </p>
+                </div>
+
+                <SwipeCard title={prediction.title} onSwipe={handleSwipe} />
+              </>
             )}
-
-            <div className="text-center mb-6">
-              <h2 className="text-xl font-medium mb-2">
-                左右にスワイプして予測
-              </h2>
-              <p className="text-base text-muted-foreground">
-                右にスワイプで「はい」、左にスワイプで「いいえ」
-              </p>
-            </div>
-
-            <SwipeCard title={prediction.title} onSwipe={handleSwipe} />
           </>
         )}
       </div>
