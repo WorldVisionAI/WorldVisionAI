@@ -81,7 +81,7 @@ export const PayBlock = ({ amount, onSuccess }: PayBlockProps) => {
       className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 px-6 rounded-lg shadow-sm transition-all duration-200 ease-in-out transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-2"
       onClick={handlePay}
     >
-      <span>{amount}WLDを支払う</span>
+      <span>{amount} Pay WLD</span>
     </button>
   );
 };

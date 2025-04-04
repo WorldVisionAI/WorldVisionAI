@@ -1,3 +1,5 @@
+'use client';
+
 import { Navbar } from '@/components/navbar';
 import { FloatingHeader } from '@/components/floating-header';
 import { Button } from '@/components/ui/button';
@@ -10,27 +12,28 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 export default function Home() {
   const featuredPredictions = [
     {
       id: 1,
-      title: '2025年までにビットコインは10万ドルを超えるか？',
-      category: '為替',
+      title: 'Will Bitcoin exceed $100,000 by 2025?',
+      category: 'Currency',
       yesPercentage: 65,
       endDate: '2025-12-31',
     },
     {
       id: 2,
-      title: '次期アメリカ大統領選挙で民主党候補が勝利するか？',
-      category: '政治',
+      title: 'Will the Democratic candidate win the next US presidential election?',
+      category: 'Politics',
       yesPercentage: 48,
       endDate: '2024-11-05',
     },
     {
       id: 3,
-      title: '次回の映画アカデミー賞作品賞を日本映画が受賞するか？',
-      category: 'エンタメ',
+      title: 'Will a Japanese film win the next Academy Award for Best Picture?',
+      category: 'Entertainment',
       yesPercentage: 12,
       endDate: '2025-03-01',
     },
@@ -52,20 +55,20 @@ export default function Home() {
             />
           </div>
           <p className="text-muted-foreground mt-2 max-w-md">
-            未来を予測し、賭けを行い、AIとチャットで深く理解する新しい予測市場プラットフォーム
+            A new prediction market platform where you can predict the future, place bets, and deeply understand through AI chat
           </p>
           <div className="flex gap-4 mt-6">
             <Button asChild>
-              <Link href="/bet">予測に参加する</Link>
+              <Link href="/bet">Join Predictions</Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link href="/launch">新しい予測の作成</Link>
+              <Link href="/launch">Create New Prediction</Link>
             </Button>
           </div>
         </div>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">注目の予測</h2>
+          <h2 className="text-2xl font-bold mb-4">Featured Predictions</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {featuredPredictions.map((prediction) => (
               <Card key={prediction.id}>
@@ -88,19 +91,22 @@ export default function Home() {
                   </div>
                   <div className="flex justify-end mb-4">
                     <span className="text-muted-foreground text-sm">
-                      {new Date(prediction.endDate).toLocaleDateString('ja-JP')}まで
+                      Until {new Date(prediction.endDate).toLocaleDateString('en-US')}
                     </span>
                   </div>
                   <Button className="w-full" asChild>
-                    <Link href={`/bet/${prediction.id}`}>賭けに参加</Link>
+                    <Link href={`/bet/${prediction.id}`}>Join Bet</Link>
                   </Button>
                 </CardContent>
               </Card>
             ))}
           </div>
           <div className="text-center mt-4">
-            <Button variant="outline" asChild>
-              <Link href="/bet">すべての予測を見る</Link>
+            <Button 
+              variant="outline" 
+              onClick={() => toast.info('Coming soon! More predictions will be added in the future.')}
+            >
+              View All Predictions
             </Button>
           </div>
         </section>

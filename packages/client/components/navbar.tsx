@@ -17,27 +17,27 @@ export function Navbar() {
 
   const navItems = [
     {
-      name: 'ホーム',
+      name: 'Home',
       href: '/',
       icon: <Home className="h-5 w-5" />,
     },
     // {
-    //   name: '予測開始',
+    //   name: 'Launch',
     //   href: '/launch',
     //   icon: <PlusCircle className="h-5 w-5" />,
     // },
     // {
-    //   name: '賭け',
+    //   name: 'Bet',
     //   href: '/bet',
     //   icon: <TrendingUp className="h-5 w-5" />,
     // },
     {
-      name: '結果',
+      name: 'Results',
       href: '/results',
       icon: <BarChart3 className="h-5 w-5" />,
     },
     {
-      name: 'チャット',
+      name: 'Chat',
       href: '/chatbot',
       icon: <MessageCircle className="h-5 w-5" />,
     },

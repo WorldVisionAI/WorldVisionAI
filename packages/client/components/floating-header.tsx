@@ -35,7 +35,7 @@ export function FloatingHeader() {
             </div>
           ) : (
             <Button variant="secondary" size="sm" onClick={handleSignIn}>
-              ログイン
+              Login
             </Button>
           )}
         </nav>
