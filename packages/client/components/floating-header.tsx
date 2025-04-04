@@ -7,6 +7,7 @@ import { MiniKit } from '@worldcoin/minikit-js';
 
 export function FloatingHeader() {
   const userName = useWalletStore((state: any) => state.userName);
+  const walletAddress = useWalletStore((state: any) => state.walletAddress);
   const setUserName = useWalletStore((state: any) => state.setUserName);
   const setWalletAddress = useWalletStore((state: any) => state.setWalletAddress);
 
@@ -35,9 +36,9 @@ export function FloatingHeader() {
           {/* Add your logo or site name here if needed */}
         </div>
         <nav className="flex items-center gap-4">
-          {userName ? (
+          {(userName || walletAddress) ? (
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">{userName}</span>
+              <span className="text-sm font-medium">{userName ?? walletAddress.slice(0, 4)}...{walletAddress.slice(-4)}</span>
             </div>
           ) : (
             <Button variant="secondary" size="sm" onClick={handleSignIn}>
