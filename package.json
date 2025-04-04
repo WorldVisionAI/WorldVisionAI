@@ -1,0 +1,17 @@
+{
+  "name": "prediction-market",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": "20.x",
+    "pnpm": "10.x"
+  },
+  "packageManager": "pnpm@10.5.2"
+}

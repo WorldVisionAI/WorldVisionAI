@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": "."
+    },
+    {
+      "name": "client",
+      "path": "packages/client"
+    },
+    {
+      "name": "contract",
+      "path": "packages/contract"
+    }
+  ],
+  "settings": {}
+}
