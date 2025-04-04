@@ -15,8 +15,8 @@ export default function ResultsPage() {
   const completedPredictions = [
     {
       id: 101,
-      title: '2023年内にビットコインは5万ドルを超えるか？',
-      category: '為替',
+      title: 'Will Bitcoin exceed $50,000 by the end of 2023?',
+      category: 'Forex',
       result: true,
       yourBet: 'yes',
       betAmount: 100,
@@ -26,8 +26,8 @@ export default function ResultsPage() {
     },
     {
       id: 102,
-      title: '2024年1月のFRB会合で利下げが決定されるか？',
-      category: '為替',
+      title: 'Will the FRB decide to cut interest rates at the January 2024 meeting?',
+      category: 'Forex',
       result: false,
       yourBet: 'no',
       betAmount: 200,
@@ -37,8 +37,8 @@ export default function ResultsPage() {
     },
     {
       id: 103,
-      title: '2023年アカデミー賞作品賞を「オッペンハイマー」が受賞するか？',
-      category: 'エンタメ',
+      title: 'Will "Oppenheimer" win the Academy Award for Best Picture in 2023?',
+      category: 'Entertainment',
       result: true,
       yourBet: 'no',
       betAmount: 150,
@@ -60,12 +60,12 @@ export default function ResultsPage() {
   return (
     <main className="min-h-screen pb-20">
       <div className="container px-4 py-6 mx-auto max-w-4xl">
-        <h1 className="text-2xl font-bold mb-6 text-center">予測結果</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Prediction Results</h1>
 
         <Tabs defaultValue="results" className="mb-6">
           <TabsList className="grid grid-cols-2 mb-4">
-            <TabsTrigger value="results">結果</TabsTrigger>
-            <TabsTrigger value="stats">統計</TabsTrigger>
+            <TabsTrigger value="results">Results</TabsTrigger>
+            <TabsTrigger value="stats">Statistics</TabsTrigger>
           </TabsList>
 
           <TabsContent value="results">
@@ -79,9 +79,9 @@ export default function ResultsPage() {
                           {prediction.title}
                         </CardTitle>
                         <CardDescription>
-                          終了日:{' '}
+                          End Date:{' '}
                           {new Date(prediction.endDate).toLocaleDateString(
-                            'ja-JP',
+                            'en-US',
                           )}
                         </CardDescription>
                       </div>
@@ -101,17 +101,18 @@ export default function ResultsPage() {
                             <X className="h-4 w-4 text-red-500" />
                           )}
                         </div>
-                        <span>結果: {prediction.result ? 'Yes' : 'No'}</span>
+                        <span>Result: {prediction.result ? 'Yes' : 'No'}</span>
                       </div>
-                      <div className="text-sm">
-                        最終オッズ: Yes {prediction.yesPercentage}% / No{' '}
-                        {100 - prediction.yesPercentage}%
-                      </div>
+                    </div>
+
+                    <div className="text-sm text-right text-muted-foreground mb-4">
+                      Final Odds: Yes {prediction.yesPercentage}% / No{' '}
+                      {100 - prediction.yesPercentage}%
                     </div>
 
                     <div className="p-3 rounded-lg bg-muted mb-4">
                       <div className="flex justify-between mb-1">
-                        <span>あなたの予測:</span>
+                        <span>Your Prediction:</span>
                         <span
                           className={
                             prediction.yourBet === 'yes'
@@ -123,11 +124,11 @@ export default function ResultsPage() {
                         </span>
                       </div>
                       <div className="flex justify-between mb-1">
-                        <span>ベット額:</span>
-                        <span>{prediction.betAmount} ポイント</span>
+                        <span>Bet Amount:</span>
+                        <span>{prediction.betAmount} WLD</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>結果:</span>
+                        <span>Result:</span>
                         <span
                           className={
                             prediction.winnings > 0
@@ -138,7 +139,7 @@ export default function ResultsPage() {
                           {prediction.winnings > 0
                             ? `+${prediction.winnings}`
                             : prediction.winnings}{' '}
-                          ポイント
+                          WLD
                         </span>
                       </div>
                     </div>
@@ -151,8 +152,8 @@ export default function ResultsPage() {
           <TabsContent value="stats">
             <Card className="mb-6">
               <CardHeader>
-                <CardTitle>あなたの予測統計</CardTitle>
-                <CardDescription>これまでの予測成績の概要</CardDescription>
+                <CardTitle>Your Prediction Statistics</CardTitle>
+                <CardDescription>Overview of your prediction performance</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
@@ -160,7 +161,7 @@ export default function ResultsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-muted-foreground">
-                          総ベット数
+                          Total Bets
                         </p>
                         <h3 className="text-2xl font-bold">
                           {userStats.totalBets}
@@ -172,7 +173,7 @@ export default function ResultsPage() {
                   <div className="p-4 rounded-lg bg-muted">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-muted-foreground">正解率</p>
+                        <p className="text-sm text-muted-foreground">Accuracy</p>
                         <h3 className="text-2xl font-bold">
                           {userStats.accuracy}%
                         </h3>
@@ -186,7 +187,7 @@ export default function ResultsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-muted-foreground">
-                          総獲得ポイント
+                          Total Points Earned
                         </p>
                         <h3 className="text-2xl font-bold">
                           {userStats.totalWinnings}
@@ -199,7 +200,7 @@ export default function ResultsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-muted-foreground">
-                          ランキング
+                          Ranking
                         </p>
                         <h3 className="text-2xl font-bold">
                           {userStats.rank}/{userStats.totalUsers}
@@ -211,12 +212,12 @@ export default function ResultsPage() {
                 </div>
 
                 <div className="mt-6">
-                  <h3 className="font-medium mb-2">カテゴリー別成績</h3>
+                  <h3 className="font-medium mb-2">Performance by Category</h3>
                   <div className="space-y-2">
                     <div>
                       <div className="flex justify-between text-sm mb-1">
-                        <span>政治</span>
-                        <span>75% 正解</span>
+                        <span>Politics</span>
+                        <span>75% Correct</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
                         <div
@@ -227,8 +228,8 @@ export default function ResultsPage() {
                     </div>
                     <div>
                       <div className="flex justify-between text-sm mb-1">
-                        <span>為替・金融</span>
-                        <span>60% 正解</span>
+                        <span>Forex & Finance</span>
+                        <span>60% Correct</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
                         <div
@@ -239,8 +240,8 @@ export default function ResultsPage() {
                     </div>
                     <div>
                       <div className="flex justify-between text-sm mb-1">
-                        <span>エンタメ</span>
-                        <span>40% 正解</span>
+                        <span>Entertainment</span>
+                        <span>40% Correct</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
                         <div

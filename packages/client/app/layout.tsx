@@ -4,6 +4,7 @@ import "./globals.css";
 import NextAuthProvider from "@/components/next-auth-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import dynamic from "next/dynamic";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -41,6 +42,7 @@ export default function RootLayout({
 							disableTransitionOnChange
 						>
 							{children}
+							<Toaster />
 						</ThemeProvider>
 					</MiniKitProviderWithNoSSR>
 					</ErudaProvider>

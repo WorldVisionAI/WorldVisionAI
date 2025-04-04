@@ -6,7 +6,7 @@ import {
   PayCommandInput,
 } from "@worldcoin/minikit-js";
 
-const sendPayment = async () => {
+const sendPayment = async (amount: number) => {
   try {
     const res = await fetch(`/api/initiate-payment`, {
       method: "POST",
@@ -18,15 +18,11 @@ const sendPayment = async () => {
 
     const payload: PayCommandInput = {
       reference: id,
-      to: "0x0c892815f0B058E69987920A23FBb33c834289cf", // Test address
+      to: "0x5eFd4B32c4ccbB09912f3Db83Bc43FD33E239f09", // Test address
       tokens: [
         {
           symbol: Tokens.WLD,
-          token_amount: tokenToDecimals(0.5, Tokens.WLD).toString(),
-        },
-        {
-          symbol: Tokens.USDCE,
-          token_amount: tokenToDecimals(0.1, Tokens.USDCE).toString(),
+          token_amount: tokenToDecimals(amount, Tokens.WLD).toString(),
         },
       ],
       description: "Watch this is a test",
@@ -41,12 +37,12 @@ const sendPayment = async () => {
   }
 };
 
-const handlePay = async () => {
+const handlePayment = async (amount: number) => {
   if (!MiniKit.isInstalled()) {
     console.error("MiniKit is not installed");
     return;
   }
-  const sendPaymentResponse = await sendPayment();
+  const sendPaymentResponse = await sendPayment(amount);
   const response = sendPaymentResponse?.finalPayload;
   if (!response) {
     return;
@@ -69,10 +65,23 @@ const handlePay = async () => {
   }
 };
 
-export const PayBlock = () => {
+interface PayBlockProps {
+  amount: number;
+  onSuccess: () => void;
+}
+
+export const PayBlock = ({ amount, onSuccess }: PayBlockProps) => {
+  const handlePay = async () => {
+    await handlePayment(amount);
+    onSuccess();
+  };
+
   return (
-    <button className="bg-blue-500 p-4" onClick={handlePay}>
-      Pay
+    <button 
+      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 px-6 rounded-lg shadow-sm transition-all duration-200 ease-in-out transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-2"
+      onClick={handlePay}
+    >
+      <span>{amount} Pay WLD</span>
     </button>
   );
 };
