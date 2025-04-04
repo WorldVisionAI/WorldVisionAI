@@ -7,6 +7,7 @@ import { MiniKit } from '@worldcoin/minikit-js';
 
 export function FloatingHeader() {
   const userName = useWalletStore((state: any) => state.userName);
+  const setUserName = useWalletStore((state: any) => state.setUserName);
   const setWalletAddress = useWalletStore((state: any) => state.setWalletAddress);
 
   const handleSignIn = async () => {
@@ -17,6 +18,11 @@ export function FloatingHeader() {
       setWalletAddress(walletAddress)
       console.log('walletAddress', walletAddress)
       console.log("sign in success")
+
+      const userName = await MiniKit.getUserByAddress(walletAddress);
+        if (!userName.username) return;
+        setUserName(userName.username);
+        console.log(userName.username);
       return
     }
     console.log("sign in error")
