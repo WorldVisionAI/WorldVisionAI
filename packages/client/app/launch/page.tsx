@@ -77,7 +77,7 @@ export default function LaunchPage() {
                 別の予測を作成
               </Button>
               <Button asChild>
-                <a href="/bet">賭けページへ</a>
+                <a href="/">賭けページへ</a>
               </Button>
             </CardFooter>
           </Card>

@@ -64,7 +64,7 @@ export default function Home() {
             />
           </button>
           <p className="text-muted-foreground mt-2 max-w-md">
-            A new prediction market platform where you can predict the future, place bets, and deeply understand through AI chat
+            A new prediction market platform where you can forecast future events, participate in predictions, and deeply understand through AI chat
           </p>
           <div className="flex gap-4 mt-6">
             <Button
@@ -110,7 +110,7 @@ export default function Home() {
                     </span>
                   </div>
                   <Button className="w-full" asChild>
-                    <Link href={`/bet/${prediction.id}`}>Join Prediction</Link>
+                    <Link href={`/prediction/${prediction.id}`}>Join Prediction</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -125,87 +125,6 @@ export default function Home() {
             </Button>
           </div>
         </section>
-
-        {/* <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">予測を作成</CardTitle>
-              <PlusCircle className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground">
-                新しい予測トピックを作成し、コミュニティと共有しましょう
-              </p>
-              <Button
-                size="sm"
-                className="mt-4 w-full"
-                variant="outline"
-                asChild
-              >
-                <Link href="/launch">作成する</Link>
-              </Button>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">賭けに参加</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground">
-                様々なトピックに対して予測を行い、賭けに参加しましょう
-              </p>
-              <Button
-                size="sm"
-                className="mt-4 w-full"
-                variant="outline"
-                asChild
-              >
-                <Link href="/bet">参加する</Link>
-              </Button>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">結果を確認</CardTitle>
-              <BarChart3 className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground">
-                過去の予測結果を確認し、あなたの成績を見てみましょう
-              </p>
-              <Button
-                size="sm"
-                className="mt-4 w-full"
-                variant="outline"
-                asChild
-              >
-                <Link href="/results">確認する</Link>
-              </Button>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                AIとチャット
-              </CardTitle>
-              <MessageCircle className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground">
-                予測に関する質問や詳細情報をAIチャットボットに尋ねましょう
-              </p>
-              <Button
-                size="sm"
-                className="mt-4 w-full"
-                variant="outline"
-                asChild
-              >
-                <Link href="/chatbot">チャットする</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </section> */}
       </div>
       <Navbar />
     </main>

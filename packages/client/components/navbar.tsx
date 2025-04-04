@@ -17,27 +17,17 @@ export function Navbar() {
 
   const navItems = [
     {
-      name: 'Home',
+      name: 'Prediction',
       href: '/',
       icon: <Home className="h-5 w-5" />,
     },
     // {
-    //   name: 'Launch',
-    //   href: '/launch',
-    //   icon: <PlusCircle className="h-5 w-5" />,
-    // },
-    // {
-    //   name: 'Bet',
-    //   href: '/bet',
-    //   icon: <TrendingUp className="h-5 w-5" />,
+    //   name: 'Results',
+    //   href: '/results',
+    //   icon: <BarChart3 className="h-5 w-5" />,
     // },
     {
-      name: 'Results',
-      href: '/results',
-      icon: <BarChart3 className="h-5 w-5" />,
-    },
-    {
-      name: 'Chat',
+      name: 'AI Chat',
       href: '/chatbot',
       icon: <MessageCircle className="h-5 w-5" />,
     },

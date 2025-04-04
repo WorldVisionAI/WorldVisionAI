@@ -159,8 +159,8 @@ export default function BetDetailPage() {
     if (!isVerified) {
       return;
     }
-    // Here you would typically send the bet to your backend
-    console.log(`Placed ${isFreeSpecialBet ? 'FREE SPECIAL' : ''} bet of ${betAmount} points on ${betChoice} for prediction ${id}`);
+    // Here you would typically send the prediction to your backend
+    console.log(`Placed ${isFreeSpecialBet ? 'FREE SPECIAL' : ''} prediction of ${betAmount} points on ${betChoice} for prediction ${id}`);
     setBetPlaced(true);
   };
 
@@ -172,7 +172,7 @@ export default function BetDetailPage() {
             Prediction not found
           </h1>
           <Button asChild>
-            <Link href="/bet">Back to Predictions</Link>
+            <Link href="/">Back to Predictions</Link>
           </Button>
         </div>
         <Navbar />
@@ -186,7 +186,7 @@ export default function BetDetailPage() {
         <div className="container px-4 py-6 mx-auto max-w-md">
           <div className="flex items-center mb-6">
             <Button variant="ghost" size="icon" asChild className="h-10 w-10">
-              <Link href="/bet">
+              <Link href="/">
                 <ArrowLeft className="h-5 w-5" />
               </Link>
             </Button>
@@ -210,7 +210,7 @@ export default function BetDetailPage() {
                 {prediction.title}
               </CardTitle>
               <CardDescription className="text-center text-base mt-2">
-                You bet {betAmount}WLD on "{betChoice === 'yes' ? 'Yes' : 'No'}"
+                You prediction {betAmount}WLD on "{betChoice === 'yes' ? 'Yes' : 'No'}"
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -299,7 +299,7 @@ export default function BetDetailPage() {
             <CardHeader>
               <CardTitle className="text-xl">Confirm Your Bet</CardTitle>
               <CardDescription className="text-base">
-                Please confirm your bet details below.
+                Please confirm your prediction details below.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -361,7 +361,7 @@ export default function BetDetailPage() {
                   <CardHeader>
                     <CardTitle className="text-xl">Set Bet Amount</CardTitle>
                     <CardDescription className="text-base">
-                      Enter the amount of WLD you want to bet
+                      Enter the amount of WLD you want to prediction
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -426,7 +426,7 @@ export default function BetDetailPage() {
                     <CardHeader>
                       <CardTitle className="text-xl">Get Benefits with World ID Verification</CardTitle>
                       <CardDescription className="text-base">
-                        Verify with World ID to get one free special bet per day!
+                        Verify with World ID to get one free special prediction per day!
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -443,7 +443,7 @@ export default function BetDetailPage() {
                         Special Bet Available
                       </CardTitle>
                       <CardDescription className="text-base">
-                        Free bet slot available for verified users
+                        Free prediction slot available for verified users
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
