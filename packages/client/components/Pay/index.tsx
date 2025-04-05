@@ -49,20 +49,23 @@ const handlePayment = async (amount: number) => {
   }
 
   if (response.status == "success") {
-    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/confirm-payment`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ payload: response }),
-    });
-    const payment = await res.json();
-    if (payment.success) {
-      // Congrats your payment was successful!
-      console.log("SUCCESS!");
-    } else {
-      // Payment failed
-      console.log("FAILED!");
+    try {
+      const res = await fetch(`${process.env.NEXTAUTH_URL}/api/confirm-payment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ payload: response }),
+      });
+      const payment = await res.json();
+      if (payment.success) {
+        // Congrats your payment was successful!
+        console.log("SUCCESS!");
+        return true;  // Return true on success
+      }
+    } catch (error) {
+      console.error("Payment confirmation failed:", error);
     }
   }
+  return false;  // Return false if any step fails
 };
 
 interface PayBlockProps {
@@ -72,8 +75,10 @@ interface PayBlockProps {
 
 export const PayBlock = ({ amount, onSuccess }: PayBlockProps) => {
   const handlePay = async () => {
-    await handlePayment(amount);
-    onSuccess();
+    const success = await handlePayment(amount);
+    if (success) {
+      onSuccess();
+    }
   };
 
   return (
