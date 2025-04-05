@@ -31,6 +31,21 @@ const config: HardhatUserConfig = {
       accounts: privateKey ? [privateKey] : [],
     },
   },
+  etherscan: {
+    apiKey: {
+      "worldchain-sepolia": process.env.WORLDCHAIN_API_KEY || "",
+    },
+    customChains: [
+      {
+        network: "worldchain-sepolia",
+        chainId: 4801,
+        urls: {
+          apiURL: "https://api-sepolia.worldscan.org/api", // ここを実際のAPI URLに変更
+          browserURL: "https://sepolia.worldscan.org/",     // 実際のブラウザURLに変更
+        },
+      },
+    ],
+  },
 };
 
 export default config;

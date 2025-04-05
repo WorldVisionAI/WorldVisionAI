@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 
-export const PREDICTION_MARKET_ADDRESS = '0x34C6Bd9a27C6A15A2f6a40fF6114604e7a279C3F';
+export const PREDICTION_MARKET_ADDRESS = '0x6f7f83Ae20341Dd0193cBb12237E3409eFD991A1';
 export const PREDICTION_MARKET_ABI = [
   "function getTotalYes() external view returns (uint256)",
   "function getTotalNo() external view returns (uint256)",
