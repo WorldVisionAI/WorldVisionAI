@@ -247,7 +247,7 @@ export default function BetDetailPage() {
           {transactionHash && (
             <Card className="shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
               <Link 
-                href={`https://sepolia.worldscan.org/tx/${transactionHash}`} 
+                href={`https://worldscan.org/tx/${transactionHash}`} 
                 target="_blank" 
                 rel="noopener noreferrer"
               >
