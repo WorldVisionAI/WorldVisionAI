@@ -112,6 +112,7 @@ export default function BetDetailPage() {
   const [showSwipeCard, setShowSwipeCard] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
+  const [transactionHash, setTransactionHash] = useState<string | null>(null);
 
   const handleSwipe = (direction: 'yes' | 'no') => {
     if (!isVerified && !isPaid) {
@@ -157,6 +158,7 @@ export default function BetDetailPage() {
         throw new Error(result.error || 'Failed to record prediction');
       }
 
+      setTransactionHash(result.transactionHash);
       console.log(`Placed ${isFreeSpecialBet ? 'FREE SPECIAL' : ''} prediction of ${betAmount} points on ${betChoice} for prediction ${id}. Transaction hash: ${result.transactionHash}`);
       setBetPlaced(true);
     } catch (error: any) {
@@ -239,6 +241,26 @@ export default function BetDetailPage() {
               </div>
             </CardContent>
           </Card>
+
+          {transactionHash && (
+            <Card className="shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+              <Link 
+                href={`https://sepolia.worldscan.org/tx/${transactionHash}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <CardHeader>
+                  <CardTitle className="text-lg">Transaction Details</CardTitle>
+                  <CardDescription>Click to view on Explorer</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-gray-100 p-3 rounded-lg break-all font-mono text-sm">
+                    {transactionHash}
+                  </div>
+                </CardContent>
+              </Link>
+            </Card>
+          )}
         </div>
         <Navbar />
       </main>
