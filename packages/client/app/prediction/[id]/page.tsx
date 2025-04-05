@@ -126,7 +126,10 @@ export default function BetDetailPage() {
   };
 
   const confirmBet = async () => {
-    if (!isVerified || !prediction) {
+    if (isFreeSpecialBet && !isVerified) {
+      return;
+    }
+    if (!prediction) {
       return;
     }
     try {
@@ -149,12 +152,10 @@ export default function BetDetailPage() {
         throw new Error('Failed to record prediction');
       }
 
-      // Here you would typically send the prediction to your backend
       console.log(`Placed ${isFreeSpecialBet ? 'FREE SPECIAL' : ''} prediction of ${betAmount} points on ${betChoice} for prediction ${id}`);
       setBetPlaced(true);
     } catch (error) {
       console.error('Error confirming bet:', error);
-      // You might want to show an error message to the user here
     }
   };
 
