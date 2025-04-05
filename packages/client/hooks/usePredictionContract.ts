@@ -18,6 +18,8 @@ export const usePredictionContract = (predictionId: number) => {
           contract.getTotalNo()
         ]);
 
+        console.log(totalYes, totalNo);
+
         const totalYesNum = Number(ethers.formatEther(totalYes));
         const totalNoNum = Number(ethers.formatEther(totalNo));
         const total = totalYesNum + totalNoNum;
