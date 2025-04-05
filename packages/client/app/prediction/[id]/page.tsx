@@ -32,6 +32,8 @@ import { SwipeCard } from './swipe-card';
 import { VerifyBlock } from '@/components/Verify';
 import { PayBlock } from '@/components/Pay';
 import { useWalletStore } from '@/store/wallet';
+import { usePredictionContract } from '@/hooks/usePredictionContract';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 // Mock data - in a real app, you would fetch this from an API
 const getPredictionById = (id: string) => {
@@ -42,16 +44,15 @@ const getPredictionById = (id: string) => {
       description:
         'This prediction will be Yes if Bitcoin price exceeds $100,000 USD at any point before December 31, 2025. Reference prices will be taken from major exchanges (Binance, Coinbase, Kraken, etc.).',
       category: 'Currency',
-      yesPercentage: 65,
       endDate: '2025-12-31',
       participants: 1243,
       history: [
-        { date: '2024-01-01', yesPercentage: 45, participants: 120 },
-        { date: '2024-02-01', yesPercentage: 48, participants: 245 },
-        { date: '2024-03-01', yesPercentage: 52, participants: 410 },
-        { date: '2024-04-01', yesPercentage: 58, participants: 620 },
-        { date: '2024-05-01', yesPercentage: 62, participants: 890 },
-        { date: '2024-06-01', yesPercentage: 65, participants: 1243 },
+        { date: '2024-01-01', yesPercentage: 35, participants: 120 },
+        { date: '2024-02-01', yesPercentage: 68, participants: 245 },
+        { date: '2024-03-01', yesPercentage: 42, participants: 410 },
+        { date: '2024-04-01', yesPercentage: 28, participants: 620 },
+        { date: '2024-05-01', yesPercentage: 52, participants: 890 },
+        { date: '2024-06-01', yesPercentage: 85, participants: 1243 },
       ],
     },
     {
@@ -88,42 +89,7 @@ const getPredictionById = (id: string) => {
         { date: '2024-04-01', yesPercentage: 11, participants: 670 },
         { date: '2024-05-01', yesPercentage: 12, participants: 876 },
       ],
-    },
-    {
-      id: '4',
-      title: 'Will Apple release a foldable iPhone in 2024?',
-      description:
-        'This prediction will be Yes if Apple officially announces and begins general sales of a foldable iPhone by December 31, 2024. Prototypes and limited editions are not included.',
-      category: 'Technology',
-      yesPercentage: 35,
-      endDate: '2024-12-31',
-      participants: 2145,
-      history: [
-        { date: '2023-10-01', yesPercentage: 25, participants: 320 },
-        { date: '2023-11-01', yesPercentage: 28, participants: 560 },
-        { date: '2023-12-01', yesPercentage: 30, participants: 890 },
-        { date: '2024-01-01', yesPercentage: 32, participants: 1240 },
-        { date: '2024-02-01', yesPercentage: 34, participants: 1780 },
-        { date: '2024-03-01', yesPercentage: 35, participants: 2145 },
-      ],
-    },
-    {
-      id: '5',
-      title: 'Will Japan exceed its previous medal count at the next Tokyo Olympics?',
-      description:
-        'This prediction will be Yes if the Japanese team surpasses their total of 58 medals from the 2021 Tokyo Olympics at the 2028 Los Angeles Olympics.',
-      category: 'Sports',
-      yesPercentage: 72,
-      endDate: '2028-08-11',
-      participants: 1532,
-      history: [
-        { date: '2023-08-01', yesPercentage: 60, participants: 210 },
-        { date: '2023-10-01', yesPercentage: 63, participants: 450 },
-        { date: '2023-12-01', yesPercentage: 67, participants: 780 },
-        { date: '2024-02-01', yesPercentage: 70, participants: 1100 },
-        { date: '2024-04-01', yesPercentage: 72, participants: 1532 },
-      ],
-    },
+    }
   ];
 
   return predictions.find((p) => p.id === id);
@@ -133,6 +99,7 @@ export default function BetDetailPage() {
   const params = useParams();
   const id = params.id as string;
   const prediction = getPredictionById(id);
+  const { yesPercentage, loading, error } = usePredictionContract(parseInt(id));
   const userName = useWalletStore((state: any) => state.userName);
   const walletAddress = useWalletStore((state: any) => state.walletAddress);
 
@@ -245,8 +212,8 @@ export default function BetDetailPage() {
                 <div className="flex justify-between text-sm">
                   <span>Current Odds:</span>
                   <span>
-                    Yes: {prediction.yesPercentage}% / No:{' '}
-                    {100 - prediction.yesPercentage}%
+                    Yes: {yesPercentage.toFixed(1)}% / No:{' '}
+                    {(100 - yesPercentage).toFixed(1)}%
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
@@ -304,19 +271,73 @@ export default function BetDetailPage() {
             </Accordion>
 
             <div className="mb-4">
-              <div className="flex justify-between text-sm mb-1">
-                <span>Yes {prediction.yesPercentage}%</span>
-                <span>No {100 - prediction.yesPercentage}%</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-3 dark:bg-gray-700">
-                <div
-                  className="bg-primary h-3 rounded-full"
-                  style={{ width: `${prediction.yesPercentage}%` }}
-                />
-              </div>
+              {loading ? (
+                <div className="w-full h-3 bg-gray-200 animate-pulse rounded-full" />
+              ) : error ? (
+                <div className="text-red-500 text-sm">Failed to load prediction data</div>
+              ) : (
+                <>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>Yes {yesPercentage.toFixed(1)}%</span>
+                    <span>No {(100 - yesPercentage).toFixed(1)}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3 dark:bg-gray-700">
+                    <div
+                      className={`h-3 rounded-full ${yesPercentage >= 50 ? 'bg-green-500' : 'bg-red-500'}`}
+                      style={{ width: `${yesPercentage}%` }}
+                    />
+                  </div>
+                </>
+              )}
             </div>
             <div className="text-sm text-muted-foreground mb-4">
               {prediction.participants.toLocaleString()} people participating
+            </div>
+
+            <div className="mt-6">
+              <h3 className="text-sm font-medium mb-2">Prediction History</h3>
+              <div className="h-[200px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={[
+                      ...prediction.history.slice(0, -1),
+                      {
+                        date: new Date().toISOString().split('T')[0],
+                        yesPercentage: loading ? prediction.history[prediction.history.length - 1].yesPercentage : yesPercentage,
+                        participants: prediction.participants
+                      }
+                    ]}
+                    margin={{
+                      top: 5,
+                      right: 10,
+                      left: 10,
+                      bottom: 5,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey="date"
+                      tickFormatter={(date) => new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    />
+                    <YAxis
+                      domain={[0, 100]}
+                      tickFormatter={(value) => `${value}%`}
+                    />
+                    <Tooltip
+                      formatter={(value: number) => [`${value}%`, 'Yes Percentage']}
+                      labelFormatter={(date) => new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    />
+                    <Line
+                      type="natural"
+                      dataKey="yesPercentage"
+                      stroke="#000000"
+                      strokeWidth={2}
+                      dot={{ r: 4, fill: "#000000" }}
+                      activeDot={{ r: 6, fill: "#000000" }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -480,7 +501,7 @@ export default function BetDetailPage() {
                         onClick={() => {
                           setIsFreeSpecialBet(!isFreeSpecialBet);
                           if (!isFreeSpecialBet) {
-                            setBetAmount('100');
+                            setBetAmount('1');
                           }
                         }}
                       >

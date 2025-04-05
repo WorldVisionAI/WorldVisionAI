@@ -121,8 +121,18 @@ export default function Home() {
                       Until {new Date(prediction.endDate).toLocaleDateString('en-US')}
                     </span>
                   </div>
-                  <Button className="w-full" asChild>
-                    <Link href={`/prediction/${prediction.id}`}>Join Prediction</Link>
+                  <Button 
+                    className="w-full" 
+                    {...(prediction.id === 1 
+                      ? { asChild: true }
+                      : { onClick: () => toast.info('Coming soon! This prediction will be available in the future.') }
+                    )}
+                  >
+                    {prediction.id === 1 ? (
+                      <Link href={`/prediction/${prediction.id}`}>Join Prediction</Link>
+                    ) : (
+                      "Join Prediction"
+                    )}
                   </Button>
                 </CardContent>
               </Card>
