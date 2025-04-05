@@ -15,18 +15,22 @@ import Link from 'next/link';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useCoolMode } from '@/hooks/useCoolMode';
+import { usePredictionContract } from '@/hooks/usePredictionContract';
 
 export default function Home() {
   const router = useRouter();
   const buttonRef = useCoolMode("/world.png");
+  const { yesPercentage: bitcoinYesPercentage, loading: bitcoinLoading, error: bitcoinError } = usePredictionContract(1);
 
   const featuredPredictions = [
     {
       id: 1,
       title: 'Will Bitcoin exceed $100,000 by 2025?',
       category: 'Currency',
-      yesPercentage: 65,
+      yesPercentage: bitcoinLoading ? 50 : bitcoinYesPercentage,
       endDate: '2025-12-31',
+      loading: bitcoinLoading,
+      error: bitcoinError
     },
     {
       id: 2,
@@ -96,13 +100,21 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-2 text-sm mb-2">
-                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                      <div
-                        className={`h-2.5 rounded-full ${prediction.yesPercentage >= 50 ? 'bg-green-500' : 'bg-red-500'}`}
-                        style={{ width: `${prediction.yesPercentage}%` }}
-                      />
-                    </div>
-                    <span className="whitespace-nowrap">{prediction.yesPercentage}% Yes</span>
+                    {prediction.loading ? (
+                      <div className="w-full h-2.5 bg-gray-200 animate-pulse rounded-full" />
+                    ) : prediction.error ? (
+                      <div className="text-red-500 text-sm">Failed to load prediction data</div>
+                    ) : (
+                      <>
+                        <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                          <div
+                            className={`h-2.5 rounded-full ${prediction.yesPercentage >= 50 ? 'bg-green-500' : 'bg-red-500'}`}
+                            style={{ width: `${prediction.yesPercentage}%` }}
+                          />
+                        </div>
+                        <span className="whitespace-nowrap">{prediction.yesPercentage.toFixed(1)}% Yes</span>
+                      </>
+                    )}
                   </div>
                   <div className="flex justify-end mb-4">
                     <span className="text-muted-foreground text-sm">
