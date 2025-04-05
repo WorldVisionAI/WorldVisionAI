@@ -155,13 +155,38 @@ export default function BetDetailPage() {
     setShowSwipeCard(true);
   };
 
-  const confirmBet = () => {
-    if (!isVerified) {
+  const confirmBet = async () => {
+    if (!isVerified || !prediction) {
       return;
     }
-    // Here you would typically send the prediction to your backend
-    console.log(`Placed ${isFreeSpecialBet ? 'FREE SPECIAL' : ''} prediction of ${betAmount} points on ${betChoice} for prediction ${id}`);
-    setBetPlaced(true);
+    try {
+      // Record the prediction in Google Spreadsheet
+      const response = await fetch('/api/record-prediction', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          predictionId: id,
+          predictionTitle: prediction.title,
+          choice: betChoice,
+          amount: betAmount,
+          walletAddress: 'TODO: Get wallet address', // You'll need to get this from your wallet connection
+          timestamp: new Date().toISOString(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to record prediction');
+      }
+
+      // Here you would typically send the prediction to your backend
+      console.log(`Placed ${isFreeSpecialBet ? 'FREE SPECIAL' : ''} prediction of ${betAmount} points on ${betChoice} for prediction ${id}`);
+      setBetPlaced(true);
+    } catch (error) {
+      console.error('Error confirming bet:', error);
+      // You might want to show an error message to the user here
+    }
   };
 
   if (!prediction) {
