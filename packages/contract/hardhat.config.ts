@@ -34,6 +34,7 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: {
       "worldchain-sepolia": process.env.WORLDCHAIN_API_KEY || "",
+      "worldchain-mainnet": process.env.WORLDCHAIN_API_KEY || "",
     },
     customChains: [
       {
@@ -42,6 +43,14 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: "https://api-sepolia.worldscan.org/api", // ここを実際のAPI URLに変更
           browserURL: "https://sepolia.worldscan.org/",     // 実際のブラウザURLに変更
+        },
+      },
+      {
+        network: "worldchain-mainnet",
+        chainId: 480,
+        urls: {
+          apiURL: "https://api.worldscan.org/api", // ここを実際のAPI URLに変更
+          browserURL: "https://worldscan.org/",     // 実際のブラウザURLに変更
         },
       },
     ],
