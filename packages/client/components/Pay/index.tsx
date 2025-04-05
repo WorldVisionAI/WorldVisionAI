@@ -52,10 +52,18 @@ const handlePayment = async (amount: number) => {
 
     if (response.status === "success") {
       try {
+        console.log("Sending payment confirmation with payload:", response);
+        const confirmationPayload = {
+          payload: response,
+          amount: amount,
+          timestamp: new Date().toISOString(),
+          status: response.status
+        };
+        
         const res = await fetch(`/api/confirm-payment`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ payload: response }),
+          body: JSON.stringify(confirmationPayload),
         });
         
         if (!res.ok) {
@@ -63,11 +71,12 @@ const handlePayment = async (amount: number) => {
         }
         
         const payment = await res.json();
+        console.log("Payment confirmation response:", payment);
         if (payment.success) {
           console.log("Payment successful!");
           return true;
         } else {
-          console.error("Payment verification failed:", payment);
+          console.error("Payment verification failed. Full response:", payment);
           return false;
         }
       } catch (error) {
