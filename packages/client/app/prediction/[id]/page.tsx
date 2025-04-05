@@ -111,6 +111,7 @@ export default function BetDetailPage() {
   const [isFreeSpecialBet, setIsFreeSpecialBet] = useState(false);
   const [showSwipeCard, setShowSwipeCard] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);
 
   const handleSwipe = (direction: 'yes' | 'no') => {
     if (!isVerified && !isPaid) {
@@ -132,6 +133,7 @@ export default function BetDetailPage() {
     if (!prediction) {
       return;
     }
+    setIsConfirming(true);
     try {
       // Record the prediction in Google Spreadsheet and on-chain
       const response = await fetch('/api/record-prediction', {
@@ -161,6 +163,8 @@ export default function BetDetailPage() {
       console.error('Error confirming bet:', error);
       // TODO: Show error toast or modal to user
       alert(error.message || 'Failed to place bet. Please try again.');
+    } finally {
+      setIsConfirming(false);
     }
   };
 
@@ -394,11 +398,16 @@ export default function BetDetailPage() {
                 variant="outline"
                 size="lg"
                 onClick={() => setShowConfirmation(false)}
+                disabled={isConfirming}
               >
                 Cancel
               </Button>
-              <Button size="lg" onClick={confirmBet}>
-                Confirm
+              <Button 
+                size="lg" 
+                onClick={confirmBet}
+                disabled={isConfirming}
+              >
+                {isConfirming ? 'Confirming...' : 'Confirm'}
               </Button>
             </CardFooter>
           </Card>
