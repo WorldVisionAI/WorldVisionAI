@@ -34,6 +34,7 @@ import { PayBlock } from '@/components/Pay';
 import { useWalletStore } from '@/store/wallet';
 import { usePredictionContract } from '@/hooks/usePredictionContract';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useCoolMode } from '@/hooks/useCoolMode';
 
 // Mock data - in a real app, you would fetch this from an API
 const getPredictionById = (id: string) => {
@@ -102,6 +103,7 @@ export default function BetDetailPage() {
   const { yesPercentage, loading, error } = usePredictionContract(parseInt(id));
   const userName = useWalletStore((state: any) => state.userName);
   const walletAddress = useWalletStore((state: any) => state.walletAddress);
+  const buttonRef = useCoolMode("/coin.png");
 
   const [betAmount, setBetAmount] = useState('1');
   const [showConfirmation, setShowConfirmation] = useState(false);

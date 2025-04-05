@@ -1,4 +1,5 @@
 "use client";
+import { useCoolMode } from "@/hooks/useCoolMode";
 import {
   MiniKit,
   VerificationLevel,
@@ -28,6 +29,7 @@ export const VerifyBlock = ({ onVerificationSuccess }: VerifyBlockProps) => {
   const [handleVerifyResponse, setHandleVerifyResponse] = useState<
     MiniAppVerifyActionErrorPayload | IVerifyResponse | null
   >(null);
+  const buttonRef = useCoolMode("/coin.png");
 
   const handleVerify = useCallback(async () => {
     if (!MiniKit.isInstalled()) {
@@ -78,6 +80,7 @@ export const VerifyBlock = ({ onVerificationSuccess }: VerifyBlockProps) => {
       <button
         className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 transition-all duration-200 ease-in-out transform hover:scale-[1.02] active:scale-[0.98]"
         onClick={handleVerify}
+        ref={buttonRef}
       >
         <svg
           className="w-5 h-5 mr-2"
