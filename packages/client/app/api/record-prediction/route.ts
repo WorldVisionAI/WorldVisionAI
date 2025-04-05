@@ -18,28 +18,26 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { 
-      predictionId, 
-      predictionTitle, 
-      choice, 
-      amount, 
-      walletAddress,
-      timestamp = new Date().toISOString()
+      createDate = new Date().toISOString(), // Create date
+      walletAddress,   // Wallet address
+      isSpecialBet,    // Special bet (true/false)
+      isYes,           // Yes/No (true/false)
+      amount,        // Bet count (value)
     } = body;
 
     // Prepare the row data
     const rowData = [
-      timestamp,
-      predictionId,
-      predictionTitle,
-      choice,
+      createDate,
+      walletAddress,
+      isSpecialBet,
+      isYes,
       amount,
-      walletAddress
     ];
 
     // Append the data to the spreadsheet
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${SHEET_NAME}!A:F`,
+      range: `${SHEET_NAME}!A:E`, // Updated range to match new column count
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [rowData],
