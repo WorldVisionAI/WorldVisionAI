@@ -123,7 +123,7 @@ function makeElementCool(
   }
 
   function updateParticles() {
-    particles.forEach((p) => {
+    for (const p of particles) {
       p.left = p.left - p.speedHorz * p.direction;
       p.top = p.top - p.speedUp;
       p.speedUp = Math.min(p.size, p.speedUp - 1);
@@ -147,7 +147,7 @@ function makeElementCool(
           `transform:rotate(${p.spinVal}deg)`,
         ].join(';'),
       );
-    });
+    }
   }
 
   let animationFrame: number | undefined;
@@ -186,8 +186,8 @@ function makeElementCool(
     if (disabled) return;
 
     if (ignoreCoolModeDocsDemo) {
-      var element = document.getElementById('cool-mode-demo');
-      if (element?.contains(e.target as any)) return;
+      const element = document.getElementById('cool-mode-demo');
+      if (element?.contains(e.target as HTMLElement)) return;
     }
 
     // ボタンの位置とサイズを取得
