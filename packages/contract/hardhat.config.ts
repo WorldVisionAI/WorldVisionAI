@@ -30,11 +30,17 @@ const config: HardhatUserConfig = {
       chainId: 80001,
       accounts: privateKey ? [privateKey] : [],
     },
+    "optimism-sepolia": {
+      url: `https://opt-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+      chainId: 11155420,
+      accounts: privateKey ? [privateKey] : [],
+    },
   },
   etherscan: {
     apiKey: {
       "worldchain-sepolia": process.env.WORLDCHAIN_API_KEY || "",
       "worldchain-mainnet": process.env.WORLDCHAIN_API_KEY || "",
+      "optimism-sepolia": process.env.OPTIMISTIC_API_KEY || "",
     },
     customChains: [
       {
@@ -51,6 +57,14 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: "https://api.worldscan.org/api", // ここを実際のAPI URLに変更
           browserURL: "https://worldscan.org/",     // 実際のブラウザURLに変更
+        },
+      },
+      {
+        network: "optimism-sepolia",
+        chainId: 11155420,
+        urls: {
+          apiURL: "https://api-sepolia-optimistic.etherscan.io/api", // ここを実際のAPI URLに変更
+          browserURL: "https://sepolia-optimism.etherscan.io/",     // 実際のブラウザURLに変更
         },
       },
     ],

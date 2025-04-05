@@ -8,6 +8,7 @@ contract PredictionMarket {
     bool public finalized;
     bool public finalResult; // true = Yes, false = No
 
+    mapping(address => bool) public admins; // 管理者のマッピング
     mapping(address => uint256) public yesBets;
     mapping(address => uint256) public noBets;
 
@@ -15,6 +16,11 @@ contract PredictionMarket {
     uint256 public totalNo;
 
     mapping(address => bool) public claimed;
+
+    modifier onlyOwnerOrAdmin() {
+        require(msg.sender == owner || admins[msg.sender], "Not authorized");
+        _;
+    }
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Not owner");
@@ -38,22 +44,34 @@ contract PredictionMarket {
         deadline = _deadline;
     }
 
-    // オーナーが代理で YES にベット記録
-    function betYesFor(address user, uint256 amount) external onlyOwner duringBetting {
+    // 管理者を追加（オーナーのみ）
+    function addAdmin(address admin) external onlyOwner {
+        require(admin != address(0), "Invalid address");
+        admins[admin] = true;
+    }
+
+    // 管理者を削除（オーナーのみ）
+    function removeAdmin(address admin) external onlyOwner {
+        require(admin != owner, "Cannot remove owner");
+        admins[admin] = false;
+    }
+
+    // オーナーまたは管理者が代理で YES にベット記録
+    function betYesFor(address user, uint256 amount) external onlyOwnerOrAdmin duringBetting {
         require(amount > 0, "Amount must be greater than 0");
         yesBets[user] += amount;
         totalYes += amount;
     }
 
-    // オーナーが代理で NO にベット記録
-    function betNoFor(address user, uint256 amount) external onlyOwner duringBetting {
+    // オーナーまたは管理者が代理で NO にベット記録
+    function betNoFor(address user, uint256 amount) external onlyOwnerOrAdmin duringBetting {
         require(amount > 0, "Amount must be greater than 0");
         noBets[user] += amount;
         totalNo += amount;
     }
 
-    // 結果の確定（オーナーのみ）
-    function finalize(bool _result) external onlyOwner afterDeadline {
+    // 結果の確定（オーナーまたは管理者）
+    function finalize(bool _result) external onlyOwnerOrAdmin afterDeadline {
         require(!finalized, "Already finalized");
         finalized = true;
         finalResult = _result;
@@ -99,8 +117,8 @@ contract PredictionMarket {
         return totalYes + totalNo;
     }
 
-    // デッドラインの修正（オーナーのみ）
-    function setDeadline(uint256 _newDeadline) external onlyOwner {
+    // デッドラインの修正（オーナーまたは管理者）
+    function setDeadline(uint256 _newDeadline) external onlyOwnerOrAdmin {
         require(_newDeadline > block.timestamp, "New deadline must be in the future");
         require(!finalized, "Market already finalized");
         deadline = _newDeadline;
