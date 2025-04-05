@@ -78,6 +78,7 @@ export default function Home() {
           </p>
           <div className="flex gap-4 mt-6">
             <Button
+              ref={buttonRef2}
               onClick={() => {
                 document
                   .getElementById('featured-predictions')
