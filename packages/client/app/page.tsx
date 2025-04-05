@@ -44,7 +44,9 @@ export default function Home() {
       title: 'Will a Japanese film win the next Academy Award for Best Picture?',
       category: 'Entertainment',
       yesPercentage: 12,
-      endDate: '2025-03-01',
+      endDate: '2024-03-01',
+      isEnded: true,
+      result: false
     },
   ];
 
@@ -117,22 +119,31 @@ export default function Home() {
                     )}
                   </div>
                   <div className="flex justify-end mb-4">
-                    <span className="text-muted-foreground text-sm">
-                      Until {new Date(prediction.endDate).toLocaleDateString('en-US')}
+                    <span className={`text-sm ${prediction.isEnded ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
+                      {prediction.isEnded 
+                        ? 'Ended'
+                        : `Until ${new Date(prediction.endDate).toLocaleDateString('en-US')}`
+                      }
                     </span>
                   </div>
                   <Button 
                     className="w-full" 
-                    {...(prediction.id === 1 
+                    variant={prediction.isEnded ? "outline" : "default"}
+                    {...(prediction.id === 1 && !prediction.isEnded
                       ? { asChild: true }
-                      : { onClick: () => toast.info('Coming soon! This prediction will be available in the future.') }
+                      : prediction.isEnded
+                        ? { asChild: true }
+                        : { 
+                            onClick: () => toast.info('Coming soon! This prediction will be available in the future.') 
+                          }
                     )}
                   >
-                    {prediction.id === 1 ? (
-                      <Link href={`/prediction/${prediction.id}`}>Join Prediction</Link>
-                    ) : (
-                      "Join Prediction"
-                    )}
+                    {prediction.isEnded 
+                      ? <Link href="/withdraw">View Result</Link>
+                      : prediction.id === 1 
+                        ? <Link href={`/prediction/${prediction.id}`}>Join Prediction</Link>
+                        : "Join Prediction"
+                    }
                   </Button>
                 </CardContent>
               </Card>
