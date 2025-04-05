@@ -98,4 +98,11 @@ contract PredictionMarket {
     function getTotalPool() external view returns (uint256) {
         return totalYes + totalNo;
     }
+
+    // デッドラインの修正（オーナーのみ）
+    function setDeadline(uint256 _newDeadline) external onlyOwner {
+        require(_newDeadline > block.timestamp, "New deadline must be in the future");
+        require(!finalized, "Market already finalized");
+        deadline = _newDeadline;
+    }
 }
