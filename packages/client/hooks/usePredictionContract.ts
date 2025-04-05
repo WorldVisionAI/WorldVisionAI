@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { getProvider, getContract } from '@/lib/web3Config';
+import { getContract, getProvider } from '@/lib/web3Config';
 import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
 
 export const usePredictionContract = (predictionId: number) => {
   const [yesPercentage, setYesPercentage] = useState<number>(0);
@@ -15,7 +15,7 @@ export const usePredictionContract = (predictionId: number) => {
 
         const [totalYes, totalNo] = await Promise.all([
           contract.getTotalYes(),
-          contract.getTotalNo()
+          contract.getTotalNo(),
         ]);
 
         console.log(totalYes, totalNo);
@@ -39,7 +39,7 @@ export const usePredictionContract = (predictionId: number) => {
     };
 
     fetchData();
-  }, [predictionId]);
+  }, []);
 
   return { yesPercentage, loading, error };
-}; 
+};

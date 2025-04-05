@@ -1,5 +1,7 @@
 'use client';
 
+import { PayBlock } from '@/components/Pay';
+import { VerifyBlock } from '@/components/Verify';
 import { Navbar } from '@/components/navbar';
 import {
   Accordion,
@@ -18,23 +20,25 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useCoolMode } from '@/hooks/useCoolMode';
+import { usePredictionContract } from '@/hooks/usePredictionContract';
+import { useWalletStore } from '@/store/wallet';
+import type { WalletState } from '@/store/wallet';
 import { ArrowLeft, Check, Info, X } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import { SwipeCard } from './swipe-card';
-import { VerifyBlock } from '@/components/Verify';
-import { PayBlock } from '@/components/Pay';
-import { useWalletStore } from '@/store/wallet';
-import { usePredictionContract } from '@/hooks/usePredictionContract';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { useCoolMode } from '@/hooks/useCoolMode';
 
 // Mock data - in a real app, you would fetch this from an API
 const getPredictionById = (id: string) => {
@@ -58,7 +62,8 @@ const getPredictionById = (id: string) => {
     },
     {
       id: '2',
-      title: 'Will the Democratic candidate win the next US presidential election?',
+      title:
+        'Will the Democratic candidate win the next US presidential election?',
       description:
         'This prediction will be Yes if the Democratic Party candidate wins the US presidential election in November 2024. The condition is winning the majority of electoral college votes and being officially recognized as president-elect.',
       category: 'Politics',
@@ -76,7 +81,8 @@ const getPredictionById = (id: string) => {
     },
     {
       id: '3',
-      title: 'Will a Japanese film win the next Academy Award for Best Picture?',
+      title:
+        'Will a Japanese film win the next Academy Award for Best Picture?',
       description:
         'This prediction will be Yes if a Japanese film (produced in Japan and primarily filmed in Japanese) wins Best Picture at the 97th Academy Awards in 2025.',
       category: 'Entertainment',
@@ -90,7 +96,7 @@ const getPredictionById = (id: string) => {
         { date: '2024-04-01', yesPercentage: 11, participants: 670 },
         { date: '2024-05-01', yesPercentage: 12, participants: 876 },
       ],
-    }
+    },
   ];
 
   return predictions.find((p) => p.id === id);
@@ -100,10 +106,14 @@ export default function BetDetailPage() {
   const params = useParams();
   const id = params.id as string;
   const prediction = getPredictionById(id);
-  const { yesPercentage, loading, error } = usePredictionContract(parseInt(id));
-  const userName = useWalletStore((state: any) => state.userName);
-  const walletAddress = useWalletStore((state: any) => state.walletAddress);
-  const buttonRef = useCoolMode("/coin.png");
+  const { yesPercentage, loading, error } = usePredictionContract(
+    Number.parseInt(id),
+  );
+  const userName = useWalletStore((state: WalletState) => state.userName);
+  const walletAddress = useWalletStore(
+    (state: WalletState) => state.walletAddress,
+  );
+  const buttonRef = useCoolMode('/coin.png');
 
   const [betAmount, setBetAmount] = useState('1');
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -150,7 +160,7 @@ export default function BetDetailPage() {
           isSpecialBet: isFreeSpecialBet,
           isYes: betChoice === 'yes',
           amount: betAmount,
-          predictionId: parseInt(id),
+          predictionId: Number.parseInt(id),
         }),
       });
 
@@ -161,12 +171,18 @@ export default function BetDetailPage() {
       }
 
       setTransactionHash(result.transactionHash);
-      console.log(`Placed ${isFreeSpecialBet ? 'FREE SPECIAL' : ''} prediction of ${betAmount} points on ${betChoice} for prediction ${id}. Transaction hash: ${result.transactionHash}`);
+      console.log(
+        `Placed ${isFreeSpecialBet ? 'FREE SPECIAL' : ''} prediction of ${betAmount} points on ${betChoice} for prediction ${id}. Transaction hash: ${result.transactionHash}`,
+      );
       setBetPlaced(true);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error confirming bet:', error);
       // TODO: Show error toast or modal to user
-      alert(error.message || 'Failed to place bet. Please try again.');
+      alert(
+        error instanceof Error
+          ? error.message
+          : 'Failed to place bet. Please try again.',
+      );
     } finally {
       setIsConfirming(false);
     }
@@ -218,7 +234,8 @@ export default function BetDetailPage() {
                 {prediction.title}
               </CardTitle>
               <CardDescription className="text-center text-base mt-2">
-                You prediction {betAmount}WLD on "{betChoice === 'yes' ? 'Yes' : 'No'}"
+                You prediction {betAmount}WLD on "
+                {betChoice === 'yes' ? 'Yes' : 'No'}"
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -246,9 +263,9 @@ export default function BetDetailPage() {
 
           {transactionHash && (
             <Card className="shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
-              <Link 
-                href={`https://worldscan.org/tx/${transactionHash}`} 
-                target="_blank" 
+              <Link
+                href={`https://worldscan.org/tx/${transactionHash}`}
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 <CardHeader>
@@ -306,7 +323,9 @@ export default function BetDetailPage() {
               {loading ? (
                 <div className="w-full h-3 bg-gray-200 animate-pulse rounded-full" />
               ) : error ? (
-                <div className="text-red-500 text-sm">Failed to load prediction data</div>
+                <div className="text-red-500 text-sm">
+                  Failed to load prediction data
+                </div>
               ) : (
                 <>
                   <div className="flex justify-between text-sm mb-1">
@@ -335,9 +354,12 @@ export default function BetDetailPage() {
                       ...prediction.history.slice(0, -1),
                       {
                         date: new Date().toISOString().split('T')[0],
-                        yesPercentage: loading ? prediction.history[prediction.history.length - 1].yesPercentage : yesPercentage,
-                        participants: prediction.participants
-                      }
+                        yesPercentage: loading
+                          ? prediction.history[prediction.history.length - 1]
+                              .yesPercentage
+                          : yesPercentage,
+                        participants: prediction.participants,
+                      },
                     ]}
                     margin={{
                       top: 5,
@@ -349,23 +371,37 @@ export default function BetDetailPage() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis
                       dataKey="date"
-                      tickFormatter={(date) => new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      tickFormatter={(date) =>
+                        new Date(date).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                        })
+                      }
                     />
                     <YAxis
                       domain={[0, 100]}
                       tickFormatter={(value) => `${value}%`}
                     />
                     <Tooltip
-                      formatter={(value: number) => [`${value}%`, 'Yes Percentage']}
-                      labelFormatter={(date) => new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                      formatter={(value: number) => [
+                        `${value}%`,
+                        'Yes Percentage',
+                      ]}
+                      labelFormatter={(date) =>
+                        new Date(date).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })
+                      }
                     />
                     <Line
                       type="natural"
                       dataKey="yesPercentage"
                       stroke="#000000"
                       strokeWidth={2}
-                      dot={{ r: 4, fill: "#000000" }}
-                      activeDot={{ r: 6, fill: "#000000" }}
+                      dot={{ r: 4, fill: '#000000' }}
+                      activeDot={{ r: 6, fill: '#000000' }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -405,7 +441,11 @@ export default function BetDetailPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>Bet Type:</span>
-                  <span className={isFreeSpecialBet ? "text-purple-600 font-bold" : ""}>
+                  <span
+                    className={
+                      isFreeSpecialBet ? 'text-purple-600 font-bold' : ''
+                    }
+                  >
                     {isFreeSpecialBet ? 'Special Free Bet' : 'Regular Bet'}
                   </span>
                 </div>
@@ -424,11 +464,7 @@ export default function BetDetailPage() {
               >
                 Cancel
               </Button>
-              <Button 
-                size="lg" 
-                onClick={confirmBet}
-                disabled={isConfirming}
-              >
+              <Button size="lg" onClick={confirmBet} disabled={isConfirming}>
                 {isConfirming ? 'Confirming...' : 'Confirm'}
               </Button>
             </CardFooter>
@@ -497,7 +533,10 @@ export default function BetDetailPage() {
                       </div>
                       {!isPaid && (
                         <div className="mt-4">
-                          <PayBlock onSuccess={handlePaymentSuccess} amount={parseInt(betAmount)} />
+                          <PayBlock
+                            onSuccess={handlePaymentSuccess}
+                            amount={Number.parseInt(betAmount)}
+                          />
                         </div>
                       )}
                     </div>
@@ -509,14 +548,19 @@ export default function BetDetailPage() {
                 {!isVerified ? (
                   <Card className="mb-6 mt-3 shadow-sm">
                     <CardHeader>
-                      <CardTitle className="text-xl">Get Benefits with World ID Verification</CardTitle>
+                      <CardTitle className="text-xl">
+                        Get Benefits with World ID Verification
+                      </CardTitle>
                       <CardDescription className="text-base">
-                        Verify with World ID to get one free special prediction per day!
+                        Verify with World ID to get one free special prediction
+                        per day!
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="flex justify-center">
-                        <VerifyBlock onVerificationSuccess={() => setIsVerified(true)} />
+                        <VerifyBlock
+                          onVerificationSuccess={() => setIsVerified(true)}
+                        />
                       </div>
                     </CardContent>
                   </Card>
@@ -532,9 +576,9 @@ export default function BetDetailPage() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <Button 
+                      <Button
                         className="w-full"
-                        variant={isFreeSpecialBet ? "secondary" : "default"}
+                        variant={isFreeSpecialBet ? 'secondary' : 'default'}
                         onClick={() => {
                           setIsFreeSpecialBet(!isFreeSpecialBet);
                           if (!isFreeSpecialBet) {
@@ -542,7 +586,9 @@ export default function BetDetailPage() {
                           }
                         }}
                       >
-                        {isFreeSpecialBet ? 'Switch to Regular Bet' : 'Use Special Bet'}
+                        {isFreeSpecialBet
+                          ? 'Switch to Regular Bet'
+                          : 'Use Special Bet'}
                       </Button>
                     </CardContent>
                   </Card>

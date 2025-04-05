@@ -126,7 +126,9 @@ export default function BetPage() {
                           </div>
                         </div>
                         <Button className="w-full h-12 text-base" asChild>
-                          <Link href={`/prediction/${prediction.id}`}>賭けに参加</Link>
+                          <Link href={`/prediction/${prediction.id}`}>
+                            賭けに参加
+                          </Link>
                         </Button>
                       </CardContent>
                     </Card>

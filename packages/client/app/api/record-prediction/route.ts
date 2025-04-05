@@ -1,7 +1,7 @@
+import { PredictionMarket__factory } from '@/src/contracts';
+import { ethers } from 'ethers';
 import { google } from 'googleapis';
 import { NextResponse } from 'next/server';
-import { ethers } from 'ethers';
-import { PredictionMarket__factory } from '@/src/contracts';
 
 // Google Sheets API setup
 const auth = new google.auth.GoogleAuth({
@@ -34,7 +34,7 @@ const contractAddress = process.env.NEXT_PUBLIC_PREDICTION_CONTRACT_ADDRESS;
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { 
+    const {
       createDate = new Date().toISOString(),
       walletAddress,
       isSpecialBet,
@@ -47,21 +47,18 @@ export async function POST(req: Request) {
     if (!walletAddress || !ethers.isAddress(walletAddress)) {
       return NextResponse.json(
         { error: 'Invalid wallet address' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (typeof amount !== 'string' && typeof amount !== 'number') {
-      return NextResponse.json(
-        { error: 'Invalid amount' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid amount' }, { status: 400 });
     }
 
     if (typeof predictionId !== 'number') {
       return NextResponse.json(
         { error: 'Invalid prediction ID' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -77,11 +74,14 @@ export async function POST(req: Request) {
 
     try {
       // First try to interact with the smart contract
-      const contract = PredictionMarket__factory.connect(contractAddress, ownerWallet);
-      
+      const contract = PredictionMarket__factory.connect(
+        contractAddress,
+        ownerWallet,
+      );
+
       // Convert amount to contract format (assuming WLD has 18 decimals)
       const amountInWei = ethers.parseEther(amount.toString());
-      
+
       console.log('Sending transaction with params:', {
         walletAddress,
         amountInWei: amountInWei.toString(),
@@ -91,13 +91,13 @@ export async function POST(req: Request) {
       // Call the appropriate contract function based on the bet type
       const nonce = await ownerWallet.getNonce();
       console.log('Using nonce:', nonce);
-      
-      const tx = isYes 
+
+      const tx = isYes
         ? await contract.betYesFor(walletAddress, amountInWei, { nonce })
         : await contract.betNoFor(walletAddress, amountInWei, { nonce });
-      
+
       console.log('Transaction sent:', tx.hash);
-      
+
       // Wait for transaction confirmation
       const receipt = await tx.wait();
       if (!receipt) {
@@ -115,42 +115,56 @@ export async function POST(req: Request) {
         },
       });
 
-      return NextResponse.json({ 
+      return NextResponse.json({
         success: true,
-        transactionHash: tx.hash
+        transactionHash: tx.hash,
       });
-
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Contract interaction error:', error);
-      
+
+      interface ContractError extends Error {
+        code?: string;
+        reason?: string;
+      }
+
       // Check if it's a contract revert
-      if (error.code === 'CALL_EXCEPTION' || error.code === 'UNPREDICTABLE_GAS_LIMIT') {
+      if (
+        error instanceof Error &&
+        ((error as ContractError).code === 'CALL_EXCEPTION' ||
+          (error as ContractError).code === 'UNPREDICTABLE_GAS_LIMIT')
+      ) {
         return NextResponse.json(
-          { error: 'Smart contract error: ' + (error.reason || error.message) },
-          { status: 400 }
+          {
+            error: `Smart contract error: ${(error as ContractError).reason || error.message}`,
+          },
+          { status: 400 },
         );
       }
 
       // Check if it's a network error
-      if (error.code === 'NETWORK_ERROR') {
+      if (
+        error instanceof Error &&
+        (error as ContractError).code === 'NETWORK_ERROR'
+      ) {
         return NextResponse.json(
           { error: 'Network error: Please check your connection' },
-          { status: 503 }
+          { status: 503 },
         );
       }
 
       // For any other errors
       return NextResponse.json(
-        { error: 'Transaction failed: ' + error.message },
-        { status: 500 }
+        {
+          error: `Transaction failed: ${error instanceof Error ? error.message : String(error)}`,
+        },
+        { status: 500 },
       );
     }
-
   } catch (error) {
     console.error('API error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
-} 
+}
