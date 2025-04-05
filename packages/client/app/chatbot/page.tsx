@@ -5,55 +5,44 @@ import type React from 'react';
 import { Navbar } from '@/components/navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { useChat } from 'ai/react';
+import { Textarea } from '@/components/ui/textarea';
 import { Bot, SendHorizontal, Sparkles, User } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
+const SUGGESTED_QUESTIONS = [
+  'Tell me about the future price of Bitcoin.',
+  'What is the outlook for the next presidential election?',
+  'Could you explain how prediction markets work?',
+  'What factors should be considered when making investment decisions?',
+];
+
+const MARKET_DATA = {
+  "market_name": "Will Bitcoin exceed $100,000 by 2025?",
+  "current_forecast": {
+    "yes": 68.5,
+    "no": 31.5
+  },
+  "forecast_history": [
+    { "date": "2025-01-01", "yes": 45.0, "no": 55.0 },
+    { "date": "2025-01-02", "yes": 47.2, "no": 52.8 },
+    { "date": "2025-01-03", "yes": 50.1, "no": 49.9 },
+    { "date": "2025-03-30", "yes": 68.5, "no": 31.5 }
+  ]
+}
+
+type Message = {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
 export default function ChatbotPage() {
-  const searchParams = useSearchParams();
-  const topic = searchParams.get('topic');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const { messages, input, handleInputChange, handleSubmit, isLoading } =
-    useChat({
-      initialMessages: topic
-        ? [
-            {
-              id: '1',
-              role: 'system',
-              content:
-                'あなたはWorldvisionAIの予測市場アシスタントです。ユーザーの質問に対して、予測市場や経済、政治、エンターテイメントなどの分野に関する情報を提供してください。予測に関する分析や背景情報を詳しく説明し、ユーザーが賢明な判断を下せるようサポートしてください。',
-            },
-            {
-              id: '2',
-              role: 'user',
-              content: `「${topic}」について詳しく教えてください。この予測に関連する背景情報や、考慮すべき要素を教えてください。`,
-            },
-          ]
-        : [
-            {
-              id: '1',
-              role: 'system',
-              content:
-                'あなたはWorldvisionAIの予測市場アシスタントです。ユーザーの質問に対して、予測市場や経済、政治、エンターテイメントなどの分野に関する情報を提供してください。予測に関する分析や背景情報を詳しく説明し、ユーザーが賢明な判断を下せるようサポートしてください。',
-            },
-            {
-              id: '2',
-              role: 'assistant',
-              content:
-                'こんにちは！WorldvisionAIのアシスタントです。予測市場や現在のトピックについて何か質問がありますか？経済、政治、エンターテイメント、テクノロジーなど、様々な分野についてお答えできます。',
-            },
-          ],
-    });
-
-  const [suggestedQuestions, setSuggestedQuestions] = useState([
-    'ビットコインの将来価格について教えてください',
-    '次の大統領選挙の見通しはどうですか？',
-    '予測市場の仕組みを説明してください',
-    '投資判断をする際に考慮すべき要素は？',
-  ]);
+  const [messages, setMessages] = useState<Message[]>([{
+    role: 'assistant',
+    content: 'Hello! I\'m WorldVisionAI\'s assistant. Do you have any questions about prediction markets or current topics? I can provide information on various areas, such as economics, politics, entertainment, and technology.',
+  }]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     scrollToBottom();
@@ -63,43 +52,70 @@ export default function ChatbotPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleSuggestedQuestion = (question: string) => {
-    const fakeEvent = {
-      preventDefault: () => {},
-    } as React.FormEvent<HTMLFormElement>;
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+  };
 
-    // Set the input value to the suggested question
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const userMessage: Message = {
+      role: 'user',
+      content: input,
+    };
+    
+    setMessages(prevMessages => [...prevMessages, userMessage]);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      const result = await fetch('https://3eg04e3frd.execute-api.us-east-1.amazonaws.com/world-vision-ai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sessionId: Math.random().toString(36).substring(7), message: input, marketData: MARKET_DATA }),
+      });
+
+      if(result.ok) {
+        const data = await result.json();
+        const assistantMessage: Message = {
+          role: 'assistant',
+          content: data.answer
+        }
+        setMessages(prevMessages => [...prevMessages, assistantMessage]);
+      }
+    } catch(error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSuggestedQuestion = (question: string) => {
     handleInputChange({
       target: { value: question },
-    } as React.ChangeEvent<HTMLInputElement>);
-
-    // Submit the form with the suggested question
-    setTimeout(() => {
-      handleSubmit(fakeEvent);
-    }, 100);
+    } as React.ChangeEvent<HTMLTextAreaElement>);
   };
 
   return (
     <main className="min-h-screen pb-20">
       <div className="container px-4 py-6 mx-auto max-w-2xl">
         <h1 className="text-2xl font-bold mb-6 text-center">
-          AIチャットボット
+        AI Chat
         </h1>
 
         <Card className="mb-4 shadow-sm">
           <CardContent className="p-4">
             <p className="text-base text-muted-foreground">
-              予測に関する質問や、背景情報について気軽に質問してください。AIが最新の情報と分析を提供します。
+            Feel free to ask any questions related to predictions or background information. The AI will provide you with the latest information and analysis.
             </p>
           </CardContent>
         </Card>
 
         <div className="bg-muted rounded-lg p-4 mb-4 h-[60vh] overflow-y-auto">
-          {messages
-            .filter((message) => message.role !== 'system')
-            .map((message, index) => (
+          {messages.map((message, index) => (
               <div
-                key={message.id || `message-${index}-${message.role}`}
+                key={`message-${index}-${message.role}`}
                 className={`flex mb-4 ${
                   message.role === 'user' ? 'justify-end' : 'justify-start'
                 }`}
@@ -163,10 +179,10 @@ export default function ChatbotPage() {
           <div className="mb-4">
             <p className="text-base font-medium mb-2 flex items-center">
               <Sparkles className="h-4 w-4 mr-1 text-primary" />
-              おすすめの質問
+              Suggested Questions
             </p>
             <div className="flex flex-wrap gap-2">
-              {suggestedQuestions.map((question, index) => (
+              {SUGGESTED_QUESTIONS.map((question, index) => (
                 <Button
                   key={`question-${index}-${question}`}
                   variant="outline"
@@ -182,16 +198,17 @@ export default function ChatbotPage() {
         )}
 
         <form onSubmit={handleSubmit} className="flex gap-2">
-          <Input
+          <Textarea
             value={input}
             onChange={handleInputChange}
-            placeholder="質問を入力してください..."
-            className="flex-1 h-12 text-base"
+            placeholder="Enter your question..."
+            className="flex-1 min-h-[40px] max-h-[40px] text-base resize-none"
             disabled={isLoading}
+            rows={1}
           />
           <Button type="submit" disabled={isLoading || !input.trim()} size="lg">
             <SendHorizontal className="h-5 w-5 mr-2" />
-            送信
+            Send
           </Button>
         </form>
       </div>
