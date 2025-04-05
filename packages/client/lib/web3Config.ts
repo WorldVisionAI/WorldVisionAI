@@ -8,7 +8,7 @@ export const PREDICTION_MARKET_ABI = [
 ];
 
 export const getProvider = () => {
-  return new ethers.JsonRpcProvider(`https://worldchain-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`);
+  return new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL);
 };
 
 export const getContract = (provider: ethers.Provider) => {
