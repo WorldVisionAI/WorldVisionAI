@@ -40,32 +40,47 @@ const sendPayment = async (amount: number) => {
 const handlePayment = async (amount: number) => {
   if (!MiniKit.isInstalled()) {
     console.error("MiniKit is not installed");
-    return;
+    return false;
   }
-  const sendPaymentResponse = await sendPayment(amount);
-  const response = sendPaymentResponse?.finalPayload;
-  if (!response) {
-    return;
-  }
-
-  if (response.status == "success") {
-    try {
-      const res = await fetch(`${process.env.NEXTAUTH_URL}/api/confirm-payment`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ payload: response }),
-      });
-      const payment = await res.json();
-      if (payment.success) {
-        // Congrats your payment was successful!
-        console.log("SUCCESS!");
-        return true;  // Return true on success
-      }
-    } catch (error) {
-      console.error("Payment confirmation failed:", error);
+  try {
+    const sendPaymentResponse = await sendPayment(amount);
+    const response = sendPaymentResponse?.finalPayload;
+    if (!response) {
+      console.error("No payment response received");
+      return false;
     }
+
+    if (response.status === "success") {
+      try {
+        const res = await fetch(`/api/confirm-payment`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ payload: response }),
+        });
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
+        const payment = await res.json();
+        if (payment.success) {
+          console.log("Payment successful!");
+          return true;
+        } else {
+          console.error("Payment verification failed:", payment);
+          return false;
+        }
+      } catch (error) {
+        console.error("Payment confirmation failed:", error);
+        return false;
+      }
+    }
+    console.error("Payment status not successful:", response.status);
+    return false;
+  } catch (error) {
+    console.error("Payment process failed:", error);
+    return false;
   }
-  return false;  // Return false if any step fails
 };
 
 interface PayBlockProps {
