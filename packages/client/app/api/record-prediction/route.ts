@@ -89,9 +89,12 @@ export async function POST(req: Request) {
       });
 
       // Call the appropriate contract function based on the bet type
+      const nonce = await ownerWallet.getNonce();
+      console.log('Using nonce:', nonce);
+      
       const tx = isYes 
-        ? await contract.betYesFor(walletAddress, amountInWei)
-        : await contract.betNoFor(walletAddress, amountInWei);
+        ? await contract.betYesFor(walletAddress, amountInWei, { nonce })
+        : await contract.betNoFor(walletAddress, amountInWei, { nonce });
       
       console.log('Transaction sent:', tx.hash);
       
