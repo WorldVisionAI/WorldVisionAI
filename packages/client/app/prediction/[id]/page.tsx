@@ -289,13 +289,14 @@ export default function BetDetailPage() {
   return (
     <main className="min-h-screen pb-20">
       <div className="container px-4 py-6 mx-auto max-w-md">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Prediction Details</h1>
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/">Back</Link>
+        <div className="flex items-center mb-6">
+          <Button variant="ghost" size="icon" asChild className="h-10 w-10">
+            <Link href="/">
+              <ArrowLeft className="h-5 w-5" />
+            </Link>
           </Button>
+          <h1 className="text-2xl font-bold ml-2">Prediction Details</h1>
         </div>
-
         <Card className="mb-6 shadow-sm">
           <CardHeader>
             <CardTitle className="text-xl">{prediction.title}</CardTitle>
