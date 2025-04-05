@@ -170,7 +170,7 @@ export default function BetDetailPage() {
         },
         body: JSON.stringify({
           createDate: new Date().toISOString(),
-          walletAddress: walletAddress,
+          walletAddress: "walletAddress",
           isSpecialBet: isFreeSpecialBet,
           isYes: betChoice === 'yes',
           amount: betAmount,
