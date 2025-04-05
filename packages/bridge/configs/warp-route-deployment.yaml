@@ -1,0 +1,27 @@
+optimismsepolia:
+  interchainSecurityModule:
+    modules:
+      - relayer: "0x795c71d5f76Eda51eFb87213BAc8e8F9134028A4"
+        type: trustedRelayerIsm
+      - domains: {}
+        owner: "0x795c71d5f76Eda51eFb87213BAc8e8F9134028A4"
+        type: defaultFallbackRoutingIsm
+    threshold: 1
+    type: staticAggregationIsm
+  isNft: false
+  owner: "0x795c71d5f76Eda51eFb87213BAc8e8F9134028A4"
+  type: native
+sepolia:
+  interchainSecurityModule:
+    modules:
+      - relayer: "0x795c71d5f76Eda51eFb87213BAc8e8F9134028A4"
+        type: trustedRelayerIsm
+      - domains: {}
+        owner: "0x795c71d5f76Eda51eFb87213BAc8e8F9134028A4"
+        type: defaultFallbackRoutingIsm
+    threshold: 1
+    type: staticAggregationIsm
+  isNft: false
+  owner: "0x795c71d5f76Eda51eFb87213BAc8e8F9134028A4"
+  type: native
+
