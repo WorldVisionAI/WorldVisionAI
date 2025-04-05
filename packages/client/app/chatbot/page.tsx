@@ -9,12 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Bot, SendHorizontal, Sparkles, User } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-const SUGGESTED_QUESTIONS = [
-  'Tell me about the future price of Bitcoin.',
-  'What is the outlook for the next presidential election?',
-  'Could you explain how prediction markets work?',
-  'What factors should be considered when making investment decisions?',
-];
+const SUGGESTED_QUESTIONS = ['Tell me about the future price of Bitcoin.'];
 
 const MARKET_DATA = {
   market_name: 'Will Bitcoin exceed $100,000 by 2025?',
