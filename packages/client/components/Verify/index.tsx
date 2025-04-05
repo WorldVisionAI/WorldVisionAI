@@ -1,5 +1,5 @@
 "use client";
-import { useCoolMode } from "@/hooks/useCoolMode";
+import { useCoolMode } from "@/hooks/useCoolRoundMode";
 import {
   MiniKit,
   VerificationLevel,
