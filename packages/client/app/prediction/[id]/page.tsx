@@ -133,7 +133,8 @@ export default function BetDetailPage() {
   const params = useParams();
   const id = params.id as string;
   const prediction = getPredictionById(id);
-  const walletAddress = useWalletStore();
+  const userName = useWalletStore((state: any) => state.userName);
+  const walletAddress = useWalletStore((state: any) => state.walletAddress);
 
   const [betAmount, setBetAmount] = useState('1');
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -170,7 +171,7 @@ export default function BetDetailPage() {
         },
         body: JSON.stringify({
           createDate: new Date().toISOString(),
-          walletAddress: "walletAddress",
+          walletAddress: walletAddress,
           isSpecialBet: isFreeSpecialBet,
           isYes: betChoice === 'yes',
           amount: betAmount,
