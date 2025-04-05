@@ -1,4 +1,5 @@
 "use client";
+import { useCoolMode } from "@/hooks/useCoolMode";
 import {
   MiniKit,
   tokenToDecimals,
@@ -98,6 +99,7 @@ interface PayBlockProps {
 }
 
 export const PayBlock = ({ amount, onSuccess }: PayBlockProps) => {
+  const buttonRef = useCoolMode("/coin.png");
   const handlePay = async () => {
     const success = await handlePayment(amount);
     if (success) {
@@ -109,6 +111,7 @@ export const PayBlock = ({ amount, onSuccess }: PayBlockProps) => {
     <button 
       className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 px-6 rounded-lg shadow-sm transition-all duration-200 ease-in-out transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-2"
       onClick={handlePay}
+      ref={buttonRef}
     >
       <span>{amount} Pay WLD</span>
     </button>
