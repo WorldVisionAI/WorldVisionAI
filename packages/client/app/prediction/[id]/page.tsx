@@ -103,7 +103,7 @@ export default function BetDetailPage() {
   const userName = useWalletStore((state: any) => state.userName);
   const walletAddress = useWalletStore((state: any) => state.walletAddress);
 
-  const [betAmount, setBetAmount] = useState('0.1');
+  const [betAmount, setBetAmount] = useState('1');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [betChoice, setBetChoice] = useState<'yes' | 'no' | null>(null);
   const [betPlaced, setBetPlaced] = useState(false);
@@ -432,20 +432,6 @@ export default function BetDetailPage() {
                         <Button
                           variant="outline"
                           size="lg"
-                          onClick={() => setBetAmount('0.1')}
-                        >
-                          0.1
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="lg"
-                          onClick={() => setBetAmount('0.5')}
-                        >
-                          0.1
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="lg"
                           onClick={() => setBetAmount('1')}
                         >
                           1
@@ -456,6 +442,20 @@ export default function BetDetailPage() {
                           onClick={() => setBetAmount('5')}
                         >
                           5
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          onClick={() => setBetAmount('10')}
+                        >
+                          10
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          onClick={() => setBetAmount('50')}
+                        >
+                          50
                         </Button>
                       </div>
                       {!isPaid && (
