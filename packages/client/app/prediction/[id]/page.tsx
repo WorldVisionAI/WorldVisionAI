@@ -149,15 +149,18 @@ export default function BetDetailPage() {
         }),
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to record prediction');
+        throw new Error(result.error || 'Failed to record prediction');
       }
 
-      const result = await response.json();
       console.log(`Placed ${isFreeSpecialBet ? 'FREE SPECIAL' : ''} prediction of ${betAmount} points on ${betChoice} for prediction ${id}. Transaction hash: ${result.transactionHash}`);
       setBetPlaced(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error confirming bet:', error);
+      // TODO: Show error toast or modal to user
+      alert(error.message || 'Failed to place bet. Please try again.');
     }
   };
 
