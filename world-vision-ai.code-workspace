@@ -11,6 +11,10 @@
     {
       "name": "contract",
       "path": "packages/contract"
+    },
+    {
+      "name": "bridge",
+      "path": "packages/bridge"
     }
   ],
   "settings": {}
