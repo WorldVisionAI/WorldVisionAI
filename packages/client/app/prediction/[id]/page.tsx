@@ -133,7 +133,7 @@ export default function BetDetailPage() {
       return;
     }
     try {
-      // Record the prediction in Google Spreadsheet
+      // Record the prediction in Google Spreadsheet and on-chain
       const response = await fetch('/api/record-prediction', {
         method: 'POST',
         headers: {
@@ -145,6 +145,7 @@ export default function BetDetailPage() {
           isSpecialBet: isFreeSpecialBet,
           isYes: betChoice === 'yes',
           amount: betAmount,
+          predictionId: parseInt(id),
         }),
       });
 
@@ -152,7 +153,8 @@ export default function BetDetailPage() {
         throw new Error('Failed to record prediction');
       }
 
-      console.log(`Placed ${isFreeSpecialBet ? 'FREE SPECIAL' : ''} prediction of ${betAmount} points on ${betChoice} for prediction ${id}`);
+      const result = await response.json();
+      console.log(`Placed ${isFreeSpecialBet ? 'FREE SPECIAL' : ''} prediction of ${betAmount} points on ${betChoice} for prediction ${id}. Transaction hash: ${result.transactionHash}`);
       setBetPlaced(true);
     } catch (error) {
       console.error('Error confirming bet:', error);
